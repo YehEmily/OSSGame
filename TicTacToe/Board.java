@@ -43,13 +43,28 @@ public class Board {
     for (int i = 0; i < 3; ++i) {
       for (int j = 0; j < 3; ++j) {
         if (board[i][j]==0) {
-          moves.add(new Move(i, j));
+          if (i != j) { // Don't add doubles yet
+            moves.add(new Move(i, j));
+          }
         }
         if (board[j][i]==0) {
-          moves.add(new Move(j, i));
+          if (i != j) { // Don't add doubles yet
+            moves.add(new Move(j, i));
+          }
         }
       }
     }
+    
+    if (board[0][0] == 0) {
+      moves.add(new Move(0,0));
+    }
+    if (board[1][1] == 0) {
+      moves.add(new Move(1,1));
+    }
+    if (board[2][2] == 0) {
+      moves.add(new Move(2,2));
+    }
+    
     return moves;
   }
   

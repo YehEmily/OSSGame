@@ -66,16 +66,17 @@ public class TicTacToeGame {
   
   private void computerTurn () {
     System.out.println("It's Computer's turn.");
-    try {
+//    try {
       Move nextMove = computer.getNextMove(board);
       System.out.println(nextMove);
       placeMark(nextMove, computer);
       computer.setTurn(false);
       user.setTurn(true);
-    } catch (NullPointerException ex) {
-      System.out.println("Null pointer exception caught");
-      isGameOver = true;
-    }
+//    } catch (NullPointerException ex) {
+//      System.out.println("Null pointer exception caught");
+//      System.out.println("Poo");
+//      isGameOver = true;
+//    }
   }
   
   private Move convertMove (String coordinate) {

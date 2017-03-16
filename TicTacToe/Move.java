@@ -1,4 +1,4 @@
-public class Move {
+public class Move implements Comparable<Move> {
   
   private int first, second;
   
@@ -17,5 +17,13 @@ public class Move {
   
   public int getSecond () {
     return second;
+  }
+  
+  public int compareTo (Move m) {
+    if ((this.first == m.getFirst()) && (this.second == m.getSecond())) {
+      return 0;
+    } else {
+      return 1;
+    }
   }
 }
