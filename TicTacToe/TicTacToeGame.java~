@@ -1,5 +1,11 @@
 import java.util.*;
 
+// I am not at all sure what I'm doing wrong, or where the bug might be
+// However, it has been 8 hours and I haven't made any progress
+// So I think I will stop for now :(
+
+// Learn about Java enumerators and iterators
+
 public class TicTacToeGame {
   Player user;
   AIPlayer computer;
@@ -25,14 +31,14 @@ public class TicTacToeGame {
       }
       
       System.out.println(toString());
-//      if (checkGameOver()) break;
+      if (checkGameOver()) break;
       
       if (computer.isTurn()) {
         computerTurn();
       }
       
       System.out.println(toString());
-//      if (checkGameOver()) break;
+      if (checkGameOver()) break;
     }
     if (!winner.equals("")) {
       System.out.println("Congratulations! " + winner + " has won!");
@@ -60,16 +66,17 @@ public class TicTacToeGame {
   
   private void computerTurn () {
     System.out.println("It's Computer's turn.");
-    try {
+//    try {
       Move nextMove = computer.getNextMove(board);
       System.out.println(nextMove);
       placeMark(nextMove, computer);
       computer.setTurn(false);
       user.setTurn(true);
-    } catch (NullPointerException ex) {
-      System.out.println("Null pointer exception caught");
-      isGameOver = true;
-    }
+//    } catch (NullPointerException ex) {
+//      System.out.println("Null pointer exception caught");
+//      System.out.println("Poo");
+//      isGameOver = true;
+//    }
   }
   
   private Move convertMove (String coordinate) {

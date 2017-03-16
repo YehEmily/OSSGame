@@ -4,61 +4,64 @@ public class AIPlayer extends Player {
   
   private Move bestMove;
   
-  private int[][] moves = {{2,2}, {1,1}, {1,3}, {3,1}, {3,3},
-    {1,2}, {2,1}, {2,3}, {3,2}};
+//  private int[][] moves = {{2,2}, {1,1}, {1,3}, {3,1}, {3,3},
+//    {1,2}, {2,1}, {2,3}, {3,2}};
   
   public AIPlayer () {
     super("Computer");
+    bestMove = new Move(-1, -1);
   }
   
   public AIPlayer(String name) {
     super(name);
+    bestMove = new Move(-1, -1);
   }
   
-  public String getMove (Board board) {
-    for (int i = 0; i < moves.length; ++i) {
-      int move_x = moves[i][0];
-      int move_y = moves[i][1];
-      if (board.getBoard()[move_x-1][move_y-1]==0) {
-        getInformedMove(board);
-        return move_x + "," + move_y;
-      }
-    }
-    System.out.println("No more moves. Game over?");
-    return null;
-  }
+  // Not in use atm
+//  public String getMove (Board board) {
+//    for (int i = 0; i < moves.length; ++i) {
+//      int move_x = moves[i][0];
+//      int move_y = moves[i][1];
+//      if (board.getBoard()[move_x-1][move_y-1]==0) {
+//        getInformedMove(board);
+//        return move_x + "," + move_y;
+//      }
+//    }
+//    System.out.println("No more moves. Game over?");
+//    return null;
+//  }
   
   public Move getMMMove (Board board) {
-    int[] result = findMMValue(board, "Computer");
-    Move m = new Move(result[1], result[2]);
-    System.out.println(result[0]);
-    return m;
+    findMMValue(board, "Computer");
+    return bestMove;
   }
   
-  public int[] findMMValue (Board b, String currentPlayer) {
+  public int findMMValue (Board b, String currentPlayer) {
     LinkedList<Move> moves = b.getAvailableMoves();
-    System.out.println(moves);
-    int currentScore;
-    int bestScore = 0;
+    int currentScore = 0;
+    int bestScore = 0; // negative infinity
     
     if (moves.isEmpty()) {
       bestScore = calculateSum(b);
+//      System.out.println(bestScore);
       
     } else {
       while (!moves.isEmpty()) {
         Move m = moves.remove();
-        
         if (currentPlayer.equals("Computer")) { // Computer's turn
           b.addMark(m.getFirst(), m.getSecond(), false);
-          currentScore = findMMValue(b, "Player")[0];
+          currentScore = findMMValue(b, "Player");
+//          System.out.println("Computer: " + currentScore);
           if (currentScore > bestScore) {
+//            System.out.println("true");
             bestScore = currentScore;
             bestMove = m;
           }
           b.removeMark(m.getFirst(), m.getSecond());
-        } else {
+        } else { // Player's turn
           b.addMark(m.getFirst(), m.getSecond(), true);
-          currentScore = findMMValue(b, "Computer")[0];
+          currentScore = findMMValue(b, "Computer");
+//          System.out.println("Player: " + currentScore);
           if (currentScore < bestScore) {
             bestScore = currentScore;
             bestMove = m;
@@ -67,14 +70,13 @@ public class AIPlayer extends Player {
         }
       }
     }
-    int[] i = new int[] {bestScore, bestMove.getFirst(), bestMove.getSecond()};
-    System.out.println(i[0]);
-    return i;
+//    System.out.println(bestScore);
+    return bestScore;
   }
   
   
   public Move getNextMove (Board currentBoard) {
-    System.out.println(getMMMove (currentBoard));
+//    System.out.println(getMMMove (currentBoard));
     return getMMMove (currentBoard);
   }
   
@@ -85,7 +87,7 @@ public class AIPlayer extends Player {
       Move move = moves.remove();
       moveSums.put(move, calculateSum(currentBoard));//, move));
     }
-    System.out.println(moveSums);
+//    System.out.println(moveSums);
     return findMaxMove(moveSums);
   }
   

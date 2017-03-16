@@ -68,7 +68,7 @@ public class TicTacToeGame {
     System.out.println("It's Computer's turn.");
 //    try {
       Move nextMove = computer.getNextMove(board);
-      System.out.println(nextMove);
+//      System.out.println(nextMove);
       placeMark(nextMove, computer);
       computer.setTurn(false);
       user.setTurn(true);
