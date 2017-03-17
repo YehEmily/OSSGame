@@ -39,7 +39,7 @@ public class AIPlayer extends Player {
   public int findMMValue (Board b, String currentPlayer) {
     LinkedList<Move> moves = b.getAvailableMoves();
     int currentScore = 0;
-    int bestScore = 0; // negative infinity
+    int bestScore = 0;
     
     if (moves.isEmpty()) {
       bestScore = calculateSum(b);
@@ -51,9 +51,7 @@ public class AIPlayer extends Player {
         if (currentPlayer.equals("Computer")) { // Computer's turn
           b.addMark(m.getFirst(), m.getSecond(), false);
           currentScore = findMMValue(b, "Player");
-//          System.out.println("Computer: " + currentScore);
           if (currentScore > bestScore) {
-//            System.out.println("true");
             bestScore = currentScore;
             bestMove = m;
           }
@@ -61,7 +59,6 @@ public class AIPlayer extends Player {
         } else { // Player's turn
           b.addMark(m.getFirst(), m.getSecond(), true);
           currentScore = findMMValue(b, "Computer");
-//          System.out.println("Player: " + currentScore);
           if (currentScore < bestScore) {
             bestScore = currentScore;
             bestMove = m;
@@ -70,7 +67,6 @@ public class AIPlayer extends Player {
         }
       }
     }
-//    System.out.println(bestScore);
     return bestScore;
   }
   

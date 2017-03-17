@@ -1,0 +1,20 @@
+public class Board {
+  
+  private int[][] board;
+  
+  public Board () {
+    board = new int[10][10];
+  }
+  
+  public void placeShip (int row, int column, String direction) {
+    if (direction.equals("vertical")) { // Keep column fixed
+      for (int i = row; i < (row+5); ++i) {
+        board[i][column] = 5;
+      }
+    } else { // Keep row fixed
+      for (int i = column; i < (column+5); ++i) {
+        board[row][i] = 5;
+      }
+    }
+  }
+}
