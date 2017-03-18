@@ -26,10 +26,55 @@ public class Board {
   public boolean isHit (String coordinate) {
     int[] coords = convertCoord(coordinate);
     if (board[coords[0]][coords[1]] == 5) {
+      board[coords[0]][coords[1]] = 7;
       return true;
     } else {
+      board[coords[0]][coords[1]] = -1;
       return false;
     }
+  }
+  
+  public boolean isValidShot (String coordinate) {
+    int[] coords = convertCoord(coordinate);
+    if ((board[coords[0]][coords[1]] != -1) &&
+        (board[coords[0]][coords[1]] != 7)) {
+      return true;
+    }
+    return false;
+  }
+  
+  public boolean isGameOver () {
+    for (int i = 0; i < 10; ++i) {
+      for (int j = 0; j < 10; ++j) {
+        if (board[i][j] == 5) {
+          return false; // Game isn't over if 1+ intact ship piece(s) present
+        }
+      }
+    }
+    return true;
+  }
+  
+  public String toHiddenString () {
+    String s = "  ";
+    for (int i = 0; i < 10; ++i) { // Print first row
+      s += i + " ";
+    }
+    
+    s += "\n";
+    for (int i = 0; i < 10; ++i) {
+      s += rowNames[i] + " ";
+      for (int j = 0; j < 10; ++j) { // Print subsequent rows
+        if (board[i][j] == 7) {
+          s += "X ";
+        } else if (board[i][j] == -1) {
+          s += "O ";
+        } else {
+          s += "- ";
+        }
+      }
+      s += "\n";
+    }
+    return s;
   }
   
   public String toString () {
@@ -80,5 +125,6 @@ public class Board {
   public static void main (String[] args) {
     Board b = new Board();
     System.out.println(b);
+    System.out.println(b.toHiddenString());
   }
 }

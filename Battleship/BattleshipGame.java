@@ -5,7 +5,7 @@ public class BattleshipGame {
 //  private Board board;
   private AIPlayer ai;
   private Player p;
-  private boolean isPlayerTurn;
+  private boolean isPlayerTurn, isGameOver;
   
   public BattleshipGame () {
 //    board = new Board();
@@ -15,15 +15,56 @@ public class BattleshipGame {
     p = new Player(s.next());
     s.close();
     isPlayerTurn = true;
+    isGameOver = false;
     play();
   }
   
   public void play () {
     placeUserShips();
     placeAIShips();
-    
-    while (isPlayerTurn) {
+    while (!isGameOver) {
+      while (isPlayerTurn) { // Player's turn
+        System.out.println("It's your turn! Enter a coordinate to shoot.");
+        String coordinate = userQuery();
+        boolean isHit = ai.getBoard().isHit(coordinate); // Check if hit
+        if (isHit) {
+          System.out.println("Congratulations! It's a hit!");
+        } else {
+          System.out.println("Drat, looks like it's a miss!");
+        }
+        isPlayerTurn = false;
+      }
+      System.out.println("***** AI'S BOARD *****");
+      System.out.println(ai.getBoard().toHiddenString());
+      isGameOver = ai.getBoard().isGameOver();
+      
+      while (!isPlayerTurn) { // AI's turn
+        System.out.println("It's the AI's turn! Give it a second to pick a coordinate.");
+        String nextShot = ai.getNextShot();
+        while (!p.getBoard().isValidShot(nextShot)) {
+          nextShot = ai.getNextShot();
+        }
+        boolean isHit = p.getBoard().isHit(nextShot); // Check if hit
+        if (isHit) {
+          ai.addHit(nextShot);
+          System.out.println("Oh! The AI has made a hit!");
+        } else {
+          System.out.println("The AI missed!");
+        }
+        isPlayerTurn = true;
+      }
+      System.out.println("***** YOUR BOARD *****");
+      System.out.println(p.getBoard());
+      isGameOver = p.getBoard().isGameOver();
     }
+    System.out.println("Congratulations, game over!");
+  }
+  
+  public String userQuery () {
+    Scanner s = new Scanner(System.in);
+    String coordinate = s.next();
+    s.close();
+    return coordinate;
   }
   
   public String[] convertCoord (String c) {
