@@ -1,5 +1,11 @@
 import java.util.*;
 
+// I am not at all sure what I'm doing wrong, or where the bug might be
+// However, it has been 8 hours and I haven't made any progress
+// So I think I will stop for now :(
+
+// Learn about Java enumerators and iterators
+
 public class TicTacToeGame {
   Player user;
   AIPlayer computer;

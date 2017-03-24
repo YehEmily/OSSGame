@@ -1,0 +1,30 @@
+public class Inventory {
+  
+  private int maxCapacity;
+  private Hashtable <String, Integer> items;
+  private boolean isFirstTime;
+  
+  public Inventory () {
+    this.maxCapacity = 20;
+    this.items = new Hashtable <String, Integer> (maxCapacity);
+    this.isFirstTime = true;
+  }
+  
+  public boolean isMaxCapacity () {
+    return (items.size() >= maxCapacity);
+  }
+  
+  public void addItem (String item, int number) {
+    items.put(item, number);
+  }
+  
+  public void displayItems () {
+    String s = "Greetings, traveler.";
+    if (isFirstTime) s += " I am Baggobot, your walking-talking-hawking inventory assistant.";
+    s += " Here is what's currently in your inventory. You have used "
+      + items.size() + " out of " + maxCapacity + " slots.";
+    Set<String> keys = items.keySet();
+  }
+  
+  }
+}

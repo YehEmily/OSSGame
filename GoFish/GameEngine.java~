@@ -1,0 +1,12 @@
+public class GameEngine {
+  
+  private Character player;
+  private Character jax;
+  private Character npc;
+  
+  public GameEngine () {
+    player = new Character ("Player 1");
+    jax = new Character ("Jaxas");
+    npc = new Character ("NPC");
+  }
+}
