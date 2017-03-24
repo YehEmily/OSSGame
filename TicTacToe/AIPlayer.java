@@ -1,5 +1,8 @@
 import java.util.*;
 
+// Create printer class(?)
+// Alternatively try printing just function calls brute-force
+
 public class AIPlayer extends Player {
   
   private Move bestMove;

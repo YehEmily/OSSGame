@@ -1,3 +1,6 @@
+// Try implementing pdf algorithm
+// Make AIs play each other
+
 import java.util.*;
 
 public class BattleshipGame {
