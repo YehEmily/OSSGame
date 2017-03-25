@@ -5,19 +5,28 @@ import java.util.*;
 
 public class AIPlayer extends Player {
   
-  private Move bestMove;
+  private Move bestOffMove;
+  private Move bestDefMove;
+  private float bestOffScore;
+  private float bestDefScore;
   
 //  private int[][] moves = {{2,2}, {1,1}, {1,3}, {3,1}, {3,3},
 //    {1,2}, {2,1}, {2,3}, {3,2}};
   
   public AIPlayer () {
     super("Computer");
-    bestMove = new Move(-1, -1);
+    bestOffMove = new Move(-1, -1);
+    bestDefMove = new Move(-1, -1);
+    bestDefScore = 0;
+    bestOffScore = 0;
   }
   
   public AIPlayer(String name) {
     super(name);
-    bestMove = new Move(-1, -1);
+    bestOffMove = new Move(-1, -1);
+    bestDefMove = new Move(-1, -1);
+    bestDefScore = 0;
+    bestOffScore = 0;
   }
   
   // Not in use atm
@@ -35,38 +44,58 @@ public class AIPlayer extends Player {
 //  }
   
   public Move getMMMove (Board board) {
-    findMMValue(board, "Computer");
-    return bestMove;
+    findMMValue(board, "Computer", 1);
+    if ((-1 * bestDefScore) > bestOffScore) {
+      System.out.println("Def: " + bestDefScore);
+      Move finalMove = bestDefMove;
+      bestOffMove = new Move(-1, -1);
+      bestDefMove = new Move(-1, -1);
+      bestDefScore = 0;
+      bestOffScore = 0;
+      return finalMove;
+    } else {
+      System.out.println("Off: " + bestOffScore);
+      Move finalMove = bestOffMove;
+      bestOffMove = new Move(-1, -1);
+      bestDefMove = new Move(-1, -1);
+      bestDefScore = 0;
+      bestOffScore = 0;
+      return finalMove;
+    }
   }
   
-  public int findMMValue (Board b, String currentPlayer) {
+  public float findMMValue (Board b, String currentPlayer, int depth) {
     LinkedList<Move> moves = b.getAvailableMoves();
-    int currentScore = 0;
-    int bestScore = 0;
+    float currentScore = 0;
+    float bestScore = 0;
     
-    if (moves.isEmpty()) {
-      bestScore = calculateSum(b);
+    if (moves.isEmpty() || isGameOver(b)) {
+      bestScore = calculateSum(b) / depth;
 //      System.out.println(bestScore);
       
     } else {
       while (!moves.isEmpty()) {
         Move m = moves.remove();
+        
         if (currentPlayer.equals("Computer")) { // Computer's turn
           b.addMark(m.getFirst(), m.getSecond(), false);
-          currentScore = findMMValue(b, "Player");
-          if (currentScore > bestScore) {
+          currentScore = findMMValue(b, "Player", depth+1);
+          if (currentScore > bestOffScore) {
+            bestOffScore = currentScore;
+            bestOffMove = m;
             bestScore = currentScore;
-            bestMove = m;
           }
-          b.removeMark(m.getFirst(), m.getSecond());
+          b.removeMark(m.getFirst(), m.getSecond()); // clean up board
+          
         } else { // Player's turn
           b.addMark(m.getFirst(), m.getSecond(), true);
-          currentScore = findMMValue(b, "Computer");
-          if (currentScore < bestScore) {
+          currentScore = findMMValue(b, "Computer", depth+1);
+          if (currentScore < bestDefScore) {
+            bestDefScore = currentScore;
+            bestDefMove = m;
             bestScore = currentScore;
-            bestMove = m;
           }
-          b.removeMark(m.getFirst(), m.getSecond());
+          b.removeMark(m.getFirst(), m.getSecond()); // clean up board
         }
       }
     }
@@ -120,13 +149,14 @@ public class AIPlayer extends Player {
   }
   
   private int calculateSumForPlayer (int[][] b, int x) {
+    // x is player; computer = 2, player = 1
     int sum = 0;
     
     // Check diagonals
     if ((b[0][0]==x) && (b[1][1]==x) && (b[2][2]==x)) {
-      sum += 100;
+      sum += 1000;
     } else if ((b[0][2]==x) && (b[1][1]==x) && (b[2][0]==x)) {
-      sum += 100;
+      sum += 1000;
     }
     
     else if (((b[0][0]==x) && (b[1][1]==x) && (b[2][2]==0)) ||
@@ -150,9 +180,9 @@ public class AIPlayer extends Player {
     // Check each row and column
     for (int i = 0; i < 3; ++i) {
       if ((b[i][0]==x) && (b[i][1]==x) && (b[i][2]==x)) {
-        sum += 100;
+        sum += 1000;
       } if ((b[0][i]==x) && (b[1][i]==x) && (b[2][i]==x)) {
-        sum += 100;
+        sum += 1000;
       }
       
       if (((b[i][0]==x) && (b[i][1]==x) && (b[i][2]==0)) ||
@@ -174,5 +204,33 @@ public class AIPlayer extends Player {
         sum += 1;
     }
     return sum;
+  }
+  
+  private boolean isGameOver (Board board) {
+    try {
+      for (int i = 0; i < 3; ++i) {
+        if ((board.getBoard()[i][0]!=0) &&
+            (board.getBoard()[i][0]==board.getBoard()[i][1]) &&
+            (board.getBoard()[i][1]==board.getBoard()[i][2])) {
+          return true;
+        } else if ((board.getBoard()[0][i]!=0) &&
+                   (board.getBoard()[0][i]==board.getBoard()[1][i]) &&
+                   (board.getBoard()[1][i]==board.getBoard()[2][i])) {
+          return true;
+        }
+      }
+      if ((board.getBoard()[0][0]!=0) && 
+          (board.getBoard()[0][0]==board.getBoard()[1][1]) &&
+          (board.getBoard()[1][1]==board.getBoard()[2][2])) {
+        return true;
+      } else if ((board.getBoard()[2][0]!=0) &&
+                 (board.getBoard()[2][0]==board.getBoard()[1][1]) &&
+                 (board.getBoard()[1][1]==board.getBoard()[0][2])) {
+        return true;
+      }
+      return false;
+    } catch (NullPointerException ex) {
+      return false;
+    }
   }
 }
