@@ -9,8 +9,9 @@ public class TicTacToeGame {
   
   public TicTacToeGame () {
     board = new Board();
-    System.out.println("What is your name?");
-    this.user = new Player(request());
+//    System.out.println("What is your name?");
+//    this.user = new Player(request());
+    this.user = new Player("Player 1"); // Expediting set-up
     this.computer = new AIPlayer();
     user.setTurn(true);
     isGameOver = false;
