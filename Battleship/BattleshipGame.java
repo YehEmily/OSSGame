@@ -1,6 +1,17 @@
 // Try implementing pdf algorithm
 // Make AIs play each other
 
+
+// PDF algorithm:
+// Every square has certain probability (integer)
+// Probability increases when next to a hit, decreases when next to a miss
+// Probability is higher in middle (Monte Carlo-style)
+
+// An alternative (since I'm having trouble figuring out the PDF algorithm)
+// Use a series of flags to determine which ship to pursue next and base shot placement on them
+// Is like current method, but doesn't check ALL the coordinates around a shot
+
+
 import java.util.*;
 
 public class BattleshipGame {
