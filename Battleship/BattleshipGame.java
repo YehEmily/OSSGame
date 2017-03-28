@@ -11,7 +11,7 @@
 // Use a series of flags to determine which ship to pursue next and base shot placement on them
 // Is like current method, but doesn't check ALL the coordinates around a shot
 
-
+import java.io.*;
 import java.util.*;
 
 public class BattleshipGame {
@@ -24,17 +24,19 @@ public class BattleshipGame {
   public BattleshipGame () {
 //    board = new Board();
     ai = new AIPlayer("AI");
-    System.out.println("What's your name?");
-    Scanner s = new Scanner(System.in);
-    p = new Player(s.next());
-    s.close();
+    p = new Player("Player 1");
+//    System.out.println("What's your name?");
+//    Scanner s = new Scanner(System.in);
+//    p = new Player(s.next());
+//    s.close();
     isPlayerTurn = true;
     isGameOver = false;
     play();
   }
   
   public void play () {
-    placeUserShips();
+    placeUserShipsFromInput("ships.txt");
+//    placeUserShips();
     placeAIShips();
     while (!isGameOver) {
       while (isPlayerTurn) { // Player's turn
@@ -95,6 +97,36 @@ public class BattleshipGame {
     for (int i = 0; i < ships.length; ++i) {
       String ship = ships[i];
       b.placeShip(convertCoord(ship)[0], convertCoord(ship)[1], ship_lengths[i]); 
+    }
+  }
+  
+  public String placeUserShipsFromInput (String fileName) {
+    Board b = p.getBoard();
+    int[] ship_sizes = {5, 4, 3, 3, 2};
+    int counter = 0;
+    try {
+      BufferedReader br = new BufferedReader(new FileReader(fileName));
+      try {
+        StringBuilder sb = new StringBuilder();
+        String line = br.readLine();
+        
+        while (line != null) {
+          b.placeShip(convertCoord(line)[0], convertCoord(line)[1], ship_sizes[counter]);
+          sb.append(line);
+          sb.append(System.lineSeparator());
+          line = br.readLine();
+          counter++;
+        }
+        String all = sb.toString();
+        br.close();
+        return all;
+      } catch (IOException ex) {
+        System.out.println("IOException caught.");
+        return "";
+      }
+      } catch (FileNotFoundException ex) {
+      System.out.println("File not found!");
+      return "";
     }
   }
   
