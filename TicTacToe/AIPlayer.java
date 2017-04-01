@@ -1,8 +1,5 @@
 import java.util.*;
 
-// Create printer class(?)
-// Alternatively try printing just function calls brute-force
-
 public class AIPlayer extends Player {
   
   private Move bestOffMove;
@@ -10,9 +7,9 @@ public class AIPlayer extends Player {
   private float bestOffScore;
   private float bestDefScore;
   
-//  private int[][] moves = {{2,2}, {1,1}, {1,3}, {3,1}, {3,3},
-//    {1,2}, {2,1}, {2,3}, {3,2}};
-  
+  /**
+   * AIPlayer constructor (default)
+   */
   public AIPlayer () {
     super("Computer");
     bestOffMove = new Move(-1, -1);
@@ -21,6 +18,10 @@ public class AIPlayer extends Player {
     bestOffScore = 0;
   }
   
+  /**
+   * AIPlayer constructor
+   * @param  name of AIPlayer
+   */
   public AIPlayer(String name) {
     super(name);
     bestOffMove = new Move(-1, -1);
@@ -29,134 +30,111 @@ public class AIPlayer extends Player {
     bestOffScore = 0;
   }
   
-  // Not in use atm
-//  public String getMove (Board board) {
-//    for (int i = 0; i < moves.length; ++i) {
-//      int move_x = moves[i][0];
-//      int move_y = moves[i][1];
-//      if (board.getBoard()[move_x-1][move_y-1]==0) {
-//        getInformedMove(board);
-//        return move_x + "," + move_y;
-//      }
-//    }
-//    System.out.println("No more moves. Game over?");
-//    return null;
-//  }
-  
-  public Move getMMMove (Board board) {
+  /**
+   * getNextMove: Returns the best next move, according to the minimax algorithm.
+   * 
+   * @param   current gameboard
+   * @return  next move that minimizes maximum loss
+   */
+  public Move getNextMove (Board board) {
     findMMValue(board, "Computer", 1);
-    if ((-1 * bestDefScore) > bestOffScore) {
-      System.out.println("Def: " + bestDefScore);
+    if ((-1 * bestDefScore) > bestOffScore) { // if defensive score > offensive
       Move finalMove = bestDefMove;
-      bestOffMove = new Move(-1, -1);
-      bestDefMove = new Move(-1, -1);
-      bestDefScore = 0;
-      bestOffScore = 0;
+      bestOffMove = new Move(-1, -1); // reset offensive move
+      bestDefMove = new Move(-1, -1); // reset defensive move
+      bestDefScore = 0; // reset defensive score
+      bestOffScore = 0; // reset offensive score
       return finalMove;
-    } else {
-      System.out.println("Off: " + bestOffScore);
+    } else { // if offensive score > defensive
       Move finalMove = bestOffMove;
-      bestOffMove = new Move(-1, -1);
-      bestDefMove = new Move(-1, -1);
-      bestDefScore = 0;
-      bestOffScore = 0;
+      bestOffMove = new Move(-1, -1); // reset offensive move
+      bestDefMove = new Move(-1, -1); // reset defensive move
+      bestDefScore = 0; // reset defensive score
+      bestOffScore = 0; // reset offensive score
       return finalMove;
     }
   }
   
+  /**
+   * findMMValue: Recursively calculates the values of moves in order to find the best one,
+   * according to the minimax algorithm.
+   * 
+   * @param   current gameboard
+   * @param   name of current player
+   * @param   current depth of search tree
+   * @return  float value of the best score on current branch of search tree
+   */
   public float findMMValue (Board b, String currentPlayer, int depth) {
-    LinkedList<Move> moves = b.getAvailableMoves();
-    float currentScore = 0;
-    float bestScore = 0;
+    LinkedList<Move> moves = b.getAvailableMoves(); // Retrieve available moves on board
+    float currentScore = 0; // Initialize current score
+    float bestScore = 0; // Initialize best score
     
-    if (moves.isEmpty() || isGameOver(b)) {
-      bestScore = calculateSum(b) / depth;
-//      System.out.println(bestScore);
+    if (moves.isEmpty() || isGameOver(b) || depth > 2) { // Check terminal conditions
+      bestScore = calculateSum(b)/depth; // If conditions met, calculate score of current board
       
     } else {
       while (!moves.isEmpty()) {
-        Move m = moves.remove();
+        Move m = moves.remove(); // Retrieve first possible move
         
         if (currentPlayer.equals("Computer")) { // Computer's turn
-          b.addMark(m.getFirst(), m.getSecond(), false);
-          currentScore = findMMValue(b, "Player", depth+1);
+          b.addMark(m.getFirst(), m.getSecond(), false); // Temporarily add mark to board
+          currentScore = findMMValue(b, "Player", depth+1); // Recurse
           if (currentScore > bestOffScore) {
             bestOffScore = currentScore;
             bestOffMove = m;
             bestScore = currentScore;
           }
-          b.removeMark(m.getFirst(), m.getSecond()); // clean up board
+          b.removeMark(m.getFirst(), m.getSecond()); // Clean board
           
         } else { // Player's turn
-          b.addMark(m.getFirst(), m.getSecond(), true);
-          currentScore = findMMValue(b, "Computer", depth+1);
+          b.addMark(m.getFirst(), m.getSecond(), true); // Temporarily add mark to board
+          currentScore = findMMValue(b, "Computer", depth+1); // Recurse
           if (currentScore < bestDefScore) {
             bestDefScore = currentScore;
             bestDefMove = m;
             bestScore = currentScore;
           }
-          b.removeMark(m.getFirst(), m.getSecond()); // clean up board
+          b.removeMark(m.getFirst(), m.getSecond()); // Clean board
         }
       }
     }
     return bestScore;
   }
   
-  
-  public Move getNextMove (Board currentBoard) {
-//    System.out.println(getMMMove (currentBoard));
-    return getMMMove (currentBoard);
-  }
-  
-  public Move getInformedMove(Board currentBoard) {
-    Hashtable<Move, Integer> moveSums = new Hashtable<Move, Integer>();
-    LinkedList<Move> moves = currentBoard.getAvailableMoves();
-    while (!moves.isEmpty()) {
-      Move move = moves.remove();
-      moveSums.put(move, calculateSum(currentBoard));//, move));
-    }
-//    System.out.println(moveSums);
-    return findMaxMove(moveSums);
-  }
-  
-  private Move findMaxMove (Hashtable<Move,Integer> moves) {
-    int maxVal = -100;
-    Move maxMove = null;
-    for (Map.Entry<Move,Integer> entry : moves.entrySet()) {
-      if (entry.getValue() > maxVal) {
-        maxVal = entry.getValue();
-        maxMove = entry.getKey();
-      }
-    }
-    return maxMove;
-  }
-  
-  // Return +100 for each 3-in-a-row
-  // Return +10 for each 2-in-a-row-with-one-empty-cell
-  // Return +1 for each 1-with-two-empty-cells
-  // Return -(value) for player (following rules above)?
-  // Return 0 otherwise (empty lines or lines with both computer and player)
+  /**
+   * calculateSum: Returns score value of board from computer's perspective
+   * 
+   * @param   current gameboard
+   * @return  score value of board
+   */
   private int calculateSum (Board board) {
     int sum = 0;
-//    board.addMark(proposedMove.getFirst(), proposedMove.getSecond(), false);
     int[][] b = board.getBoard();
-    
     sum += calculateSumForPlayer(b, 2);
     sum -= calculateSumForPlayer(b, 1);
-    
-//    board.removeMark(proposedMove.getFirst(), proposedMove.getSecond());
     return sum;
   }
   
+  /**
+   * calculateSumForPlayer: Returns score value of board from a given player's perspective,
+   * according to scoring rules:
+   * +100 for each 3-in-a-row
+   * +10 for each 2-in-a-row-with-one-empty-cell
+   * +1 for each 1-with-two-empty-cells
+   * 0 otherwise (empty lines or lines with both computer and player)
+   * 
+   * @param   current gameboard
+   * @param   current player, where computer=2 and player=1
+   * @return  score value for computer
+   */
   private int calculateSumForPlayer (int[][] b, int x) {
-    // x is player; computer = 2, player = 1
     int sum = 0;
     
     // Check diagonals
     if ((b[0][0]==x) && (b[1][1]==x) && (b[2][2]==x)) {
-      sum += 1000;
+      sum += 100;
     } else if ((b[0][2]==x) && (b[1][1]==x) && (b[2][0]==x)) {
-      sum += 1000;
+      sum += 100;
     }
     
     else if (((b[0][0]==x) && (b[1][1]==x) && (b[2][2]==0)) ||
@@ -177,7 +155,7 @@ public class AIPlayer extends Player {
              ((b[0][2]==0) && (b[1][1]==0) && (b[2][0]==x)))
       sum += 1;
     
-    // Check each row and column
+    // Check individual rows and columns
     for (int i = 0; i < 3; ++i) {
       if ((b[i][0]==x) && (b[i][1]==x) && (b[i][2]==x)) {
         sum += 1000;
@@ -206,6 +184,12 @@ public class AIPlayer extends Player {
     return sum;
   }
   
+  /**
+   * isGameOver: Checks gameboard to see if the game has ended
+   * 
+   * @param   current gameboard
+   * @return  boolean value of whether game is over or not
+   */
   private boolean isGameOver (Board board) {
     try {
       for (int i = 0; i < 3; ++i) {

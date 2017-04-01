@@ -4,14 +4,28 @@ public class Board {
   
   private int[][] board;
   
+  /**
+   * Board constructor (default)
+   */
   public Board () {
     board = new int[3][3];
   }
   
+  /**
+   * Board constructor
+   * @param  current state of board
+   */
   public Board(int[][] board) {
     this.board = board;
   }
   
+  /**
+   * addMark: Adds a mark to the board
+   * 
+   * @param  the mark's first coordinate
+   * @param  the mark's second coordinate
+   * @param  whether it's the player's turn or not
+   */
   public void addMark (int a, int b, boolean isPlayerTurn) {
     if (isPlayerTurn) {
       board[a][b] = 1;
@@ -20,24 +34,26 @@ public class Board {
     }
   }
   
+  /**
+   * removeMark: Removes a mark from the board
+   * 
+   * @param  the mark's first coordinate
+   * @param  the mark's second coordinate
+   */
   public void removeMark (int a, int b) {
     board[a][b] = 0;
   }
   
+  /**
+   * getBoard: Public getter method for board
+   */
   public int[][] getBoard () {
     return board;
   }
   
-  public int[][] getCopyBoard() {
-    int[][] copy = new int[3][3];
-    for (int i = 0; i < 3; ++i) {
-      for (int j = 0; j < 3; ++j) {
-        copy[i][j] = board[i][j];
-      }
-    }
-    return copy;
-  }
-  
+  /**
+   * getAvailableMoves: Returns all the available moves on the board
+   */
   public LinkedList<Move> getAvailableMoves () {
     LinkedList<Move> moves = new LinkedList<Move>();
     for (int i = 0; i < 3; ++i) {
@@ -86,10 +102,5 @@ public class Board {
       s += "\n";
     }
     return s.substring(0, s.length()-2);
-  }
-  
-  public static void main(String[] args) {
-    Board board = new Board();
-    System.out.println(board);
   }
 }

@@ -1,24 +1,29 @@
 import java.util.*;
 
 public class TicTacToeGame {
+  
   Player user;
   AIPlayer computer;
   boolean isGameOver;
   Board board;
   String winner;
   
+  /**
+   * Constructor
+   */
   public TicTacToeGame () {
     board = new Board();
-//    System.out.println("What is your name?");
-//    this.user = new Player(request());
     this.user = new Player("Player 1"); // Expediting set-up
     this.computer = new AIPlayer();
-    user.setTurn(true);
+    user.setTurn(true); // User goes first
     isGameOver = false;
     winner = "";
     play();
   }
   
+  /**
+   * play method: Main game method
+   */
   private void play () {
     while (!isGameOver) {
       if (user.isTurn()) {
@@ -42,6 +47,9 @@ public class TicTacToeGame {
     }
   }
   
+  /**
+   * userTurn method: Performs actions necessary for user to place mark
+   */
   private void userTurn () {
     System.out.println("It's " + user.getName() + "'s turn.");
     System.out.println("Enter a coordinate in the form X,X to mark it.");
@@ -59,28 +67,38 @@ public class TicTacToeGame {
     }
   }
   
+  /**
+   * computerTurn method: Performs actions necessary for computer to place mark
+   */
   private void computerTurn () {
     System.out.println("It's Computer's turn.");
-//    try {
+    try {
       Move nextMove = computer.getNextMove(board);
-//      System.out.println(nextMove);
       placeMark(nextMove, computer);
       computer.setTurn(false);
       user.setTurn(true);
-//    } catch (NullPointerException ex) {
-//      System.out.println("Null pointer exception caught");
-//      System.out.println("Poo");
-//      isGameOver = true;
-//    }
+    } catch (NullPointerException ex) {
+      System.out.println("Null pointer exception caught");
+      isGameOver = true;
+    }
   }
   
-  private Move convertMove (String coordinate) {
+  /**
+   * convertMove method: Converts a string coordinate into a Move object
+   * 
+   * @param   coordinate in form of string
+   * @return  coordinate in form of move
+   */
+  public static Move convertMove (String coordinate) {
     String[] coordinates = coordinate.split(",");
     Move m = new Move (Integer.parseInt(coordinates[0])-1,
                        Integer.parseInt(coordinates[1])-1);
     return m;
   }
   
+  /**
+   * request method: Returns player input
+   */
   private String request () {
     Scanner scan = new Scanner (System.in);
     try {
@@ -93,6 +111,12 @@ public class TicTacToeGame {
     }
   }
   
+  /**
+   * placeMark method: Places a move made by a given player
+   * 
+   * @param   move to be made
+   * @param   player making move
+   */
   private void placeMark (Move move, Player player) {
     int coordinate1 = move.getFirst();
     int coordinate2 = move.getSecond();
@@ -100,6 +124,9 @@ public class TicTacToeGame {
     else board.addMark(coordinate1, coordinate2, false);
   }
   
+  /**
+   * chackGameOver method: Checks conditions for endgame state
+   */
   private boolean checkGameOver () {
     try {
       for (int i = 0; i < 3; ++i) {
@@ -132,6 +159,9 @@ public class TicTacToeGame {
     }
   }
   
+  /**
+   * setWinner method: Sets the winner of a given game
+   */
   private void setWinner (int i) {
     if (i==1) {
       user.incScore();
