@@ -1,8 +1,8 @@
 import java.util.*;
 
-public class AIPlayer extends Player {
+public class AIPlayerRandomShots extends Player {
   
-  private String[] ships;
+//  private String[] ships;
   private Queue<String> queue;
   private LinkedList<String> hits;
   private boolean isCarrierFound, isBattleshipFound, isCruiserFound,
@@ -10,10 +10,9 @@ public class AIPlayer extends Player {
   private int[][] probs;
   private String[] rows;
   
-  public AIPlayer (String name) {
+  public AIPlayerRandomShots (String name) {
     super(name);
-    ships = new String[] {"A1,VERTICAL", "C5,HORIZONTAL", "F9,VERTICAL",
-      "H5,HORIZONTAL", "J0,HORIZONTAL"};
+//    ships = new String[] {"A1,VERTICAL", "C5,HORIZONTAL", "F9,VERTICAL", "H5,HORIZONTAL", "J0,HORIZONTAL"};
     queue = new LinkedList<String>();
     hits = new LinkedList<String>();
     rows = new String[] {"A", "B", "C", "D", "E", "F", "G", "H", "I", "J"};
@@ -131,9 +130,9 @@ public class AIPlayer extends Player {
     return false;
   }
   
-  public String[] getShips () {
-    return ships;
-  }
+//  public String[] getShips () {
+//    return ships;
+//  }
   
   public String getNextShot () {
     String result = "";
@@ -228,6 +227,7 @@ public class AIPlayer extends Player {
         result.add(r1); result.add(r2);
       }
     }
+//    System.out.println(result);
     return result;
   }
   
