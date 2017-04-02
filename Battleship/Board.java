@@ -54,6 +54,15 @@ public class Board {
     return true;
   }
   
+  public void addAction (String c, int action) { // for AI
+    int[] coords = convertCoord(c);
+    board[coords[0]][coords[1]] = action;
+  }
+  
+  public int[][] getBoard () {
+    return this.board;
+  }
+  
   public String toHiddenString () {
     String s = "  ";
     for (int i = 0; i < 10; ++i) { // Print first row
@@ -100,6 +109,14 @@ public class Board {
     result[1] = Integer.parseInt(c.substring(1, c.length()));
     return result;
   }
+  
+//  public int[] convertPair (String p) {
+//    int[] result = new int[2];
+//    String[] pieces = p.split(",");
+//    result[0] = Integer.parseInt(pieces[0]);
+//    result[1] = Integer.parseInt(pieces[1]);
+//    return result;
+//  }
   
   private int findRow (char c) {
     int count = -1;

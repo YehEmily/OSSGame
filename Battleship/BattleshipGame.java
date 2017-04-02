@@ -1,25 +1,12 @@
-// Try implementing pdf algorithm
-// Make AIs play each other
-
-
-// PDF algorithm:
-// Every square has certain probability (integer)
-// Probability increases when next to a hit, decreases when next to a miss
-// Probability is higher in middle (Monte Carlo-style)
-
-// An alternative (since I'm having trouble figuring out the PDF algorithm)
-// Use a series of flags to determine which ship to pursue next and base shot placement on them
-// Is like current method, but doesn't check ALL the coordinates around a shot
-
 import java.io.*;
 import java.util.*;
 
 public class BattleshipGame {
   
-//  private Board board;
   private AIPlayer ai;
   private Player p;
   private boolean isPlayerTurn, isGameOver;
+  private Board aiBoard;
   
   public BattleshipGame () {
 //    board = new Board();
@@ -31,6 +18,7 @@ public class BattleshipGame {
 //    s.close();
     isPlayerTurn = true;
     isGameOver = false;
+    aiBoard = new Board();
     play();
   }
   
@@ -56,16 +44,19 @@ public class BattleshipGame {
       
       while (!isPlayerTurn) { // AI's turn
         System.out.println("It's the AI's turn! Give it a second to pick a coordinate.");
-        String nextShot = ai.getNextShot();
+//        String nextShot = ai.getNextShot();
+        String nextShot = ai.getNextPDFShot(aiBoard);
         while (!p.getBoard().isValidShot(nextShot)) {
           nextShot = ai.getNextShot();
         }
         boolean isHit = p.getBoard().isHit(nextShot); // Check if hit
         if (isHit) {
           ai.addHit(nextShot);
+          aiBoard.addAction(nextShot, 7);
           System.out.println("Oh! The AI has made a hit!");
         } else {
           System.out.println("The AI missed!");
+          aiBoard.addAction(nextShot, -1);
         }
         isPlayerTurn = true;
       }
