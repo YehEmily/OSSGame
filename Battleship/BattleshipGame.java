@@ -8,6 +8,9 @@ public class BattleshipGame {
   private boolean isPlayerTurn, isGameOver;
   private Board aiBoard;
   
+  /**
+   * Constructor
+   */
   public BattleshipGame () {
 //    board = new Board();
     ai = new AIPlayer("AI");
@@ -46,12 +49,8 @@ public class BattleshipGame {
         System.out.println("It's the AI's turn! Give it a second to pick a coordinate.");
 //        String nextShot = ai.getNextShot();
         String nextShot = ai.getNextPDFShot(aiBoard);
-        while (!p.getBoard().isValidShot(nextShot)) {
-          nextShot = ai.getNextShot();
-        }
         boolean isHit = p.getBoard().isHit(nextShot); // Check if hit
         if (isHit) {
-          ai.addHit(nextShot);
           aiBoard.addAction(nextShot, 7);
           System.out.println("Oh! The AI has made a hit!");
         } else {

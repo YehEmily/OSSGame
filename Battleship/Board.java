@@ -110,14 +110,6 @@ public class Board {
     return result;
   }
   
-//  public int[] convertPair (String p) {
-//    int[] result = new int[2];
-//    String[] pieces = p.split(",");
-//    result[0] = Integer.parseInt(pieces[0]);
-//    result[1] = Integer.parseInt(pieces[1]);
-//    return result;
-//  }
-  
   private int findRow (char c) {
     int count = -1;
     for (int i = 0; i < rowNames.length; ++i) {
