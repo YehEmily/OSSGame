@@ -31,9 +31,11 @@ In addition, I realize that Java is less conducive to game development than some
 **April 24**: Put final touches on the game and get it ready for submission/Olin Expo  
 **May 1**: Final week - final project completion and submission!
 
-### Other Things I Should Explain But Will Do So Later
+### Other Things I Should Explain/Do But... Later
 - what do we want it to look like?
 - what do we want it to do?
 * watching ais playing each other would be fun
 * explanation of different algorithms
-(pros and cons, what are they)
+* (pros and cons, what are they)
+* semester-long reflection
+
