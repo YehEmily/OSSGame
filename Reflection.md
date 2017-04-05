@@ -12,9 +12,17 @@ In my first iteration of the game, I fed the AI a look-up table. It's *the simpl
 
 ```java
 // Moves in order of preference, where {0,0} is the top left.
-// {1,1} (center) is the most preferred move because it allows for the most possible future moves.
+// {1,1} (center) is the most preferred move because it allows for the most possible future moves
 int[][] moves = {{1,1}, {0,0}, {0,2}, {2,0}, {2,2}, {0,1}, {1,0}, {1,2}, {2,1}};
 ```
+
+Using a look-up table was obviously not the best way to implement a tic-tac-toe AI, though. Any player that knew the order in which the AI looks up moves would know exactly how to win every time, guaranteed. As a result, my next iteration involved creating an AI that could select its next move on its own, without a look-up table. This involved implementing a minimax algorithm, which aims to *minimize* the *maximum* loss. How is this achieved? First, I used an evaluation function to determine the score of the tic-tac-toe board after any given move. The rules were as follows:
+
+* ADD 100 points for each of the AI's 3-in-a-rows
+* ADD 10 points for each of the AI's 2-in-a-rows with an empty cell in the row
+* ADD 1 point for each of the AI's 1-in-a-rows with two empty cells in the row
+* SUBTRACT the resulting points from evaluating the board the same way from the player's point of view
+* DO NOTHING for empty lines or lines that are filled with both the AI's and the player's marks
 
 ### Go Fish
 
