@@ -3,33 +3,37 @@ import java.util.*;
 
 public class BattleshipGame {
   
-  private AIPlayer ai;
-  private Player p;
-  private boolean isPlayerTurn, isGameOver;
-  private Board aiBoard;
+  private AIPlayer ai; // Computer instance
+  private Player p; // Player instance
+  private boolean isPlayerTurn, isGameOver; // Game state booleans
+  private Board aiBoard; // AI's reference board
   
   /**
    * Constructor
    */
   public BattleshipGame () {
-//    board = new Board();
     ai = new AIPlayer("AI");
     p = new Player("Player 1");
 //    System.out.println("What's your name?");
 //    Scanner s = new Scanner(System.in);
 //    p = new Player(s.next());
 //    s.close();
-    isPlayerTurn = true;
+    isPlayerTurn = true; // Player starts
     isGameOver = false;
     aiBoard = new Board();
     play();
   }
   
+  /**
+   * Main gameplay happens here
+   */
   public void play () {
     placeUserShipsFromInput("ships.txt");
 //    placeUserShips();
     placeAIShips();
+    
     while (!isGameOver) {
+      
       while (isPlayerTurn) { // Player's turn
         System.out.println("It's your turn! Enter a coordinate to shoot.");
         String coordinate = userQuery();
@@ -63,9 +67,15 @@ public class BattleshipGame {
       System.out.println(p.getBoard());
       isGameOver = p.getBoard().isGameOver();
     }
+    
     System.out.println("Congratulations, game over!");
   }
   
+  /**
+   * userQuery: Asks the user for information.
+   * 
+   * @return  user input from keyboard
+   */
   public String userQuery () {
     Scanner s = new Scanner(System.in);
     String coordinate = s.next();
@@ -73,6 +83,12 @@ public class BattleshipGame {
     return coordinate;
   }
   
+  /**
+   * convertCoord: Converts a given coordinate into a String array
+   * 
+   * @param   String input
+   * @return  String[] output of input delimited by commas
+   */
   public String[] convertCoord (String c) {
     String[] result = new String[2];
     result[0] = c.split(",")[0];
@@ -80,6 +96,9 @@ public class BattleshipGame {
     return result;
   }
   
+  /**
+   * Places AI's ships
+   */
   public void placeAIShips () {
     Board b = ai.getBoard();
     String[] ships = ai.getShips();
@@ -90,6 +109,9 @@ public class BattleshipGame {
     }
   }
   
+  /**
+   * Places user's ships from a text file
+   */
   public String placeUserShipsFromInput (String fileName) {
     Board b = p.getBoard();
     int[] ship_sizes = {5, 4, 3, 3, 2};
@@ -120,6 +142,9 @@ public class BattleshipGame {
     }
   }
   
+  /**
+   * Places user's ships from keyboard
+   */
   public void placeUserShips () {
     Board b = p.getBoard(); // retrieve the player's board
     

@@ -20,6 +20,44 @@ public class AIPlayer extends Player {
   }
   
   /**
+   * getNextPDFShot: Finds the best next shot to make according to probability.
+   * 
+   * @param   current state of board
+   * @return  next shot as a string
+   */
+  public String getNextPDFShot (Board board) {
+    if (isShipPossible(board, 5)) calcProbs(board, 5);
+    else if (isShipPossible(board, 4)) calcProbs(board, 4);
+    else if (isShipPossible(board, 3)) calcProbs(board, 3);
+    else if (isShipPossible(board, 2)) calcProbs(board, 2);
+    
+    ruleOutShotsAndMisses(board);
+    testProbs();
+    
+    int highestProbSoFar = 0;
+    int[] bestMoveSoFar = new int[2];
+    for (int i = 0; i < 10; ++i) {
+      for (int j = 0; j < 10; ++j) {
+        if (probs[i][j] > highestProbSoFar) {
+          highestProbSoFar = probs[i][j];
+          bestMoveSoFar[0] = i;
+          bestMoveSoFar[1] = j;
+        }
+      }
+    }
+    String bestMove = bestMoveSoFar[0] + "," + bestMoveSoFar[1];
+    probs = new int[10][10];
+    return convertPairToCoord(bestMove);
+  }
+  
+  /**
+   * Ships getter method.
+   */
+  public String[] getShips () {
+    return ships;
+  }
+  
+  /**
    * calcProbs: Calculates probability of finding a given ship on each coordinate
    * on the board.
    * 
@@ -119,37 +157,6 @@ public class AIPlayer extends Player {
   }
   
   /**
-   * getNextPDFShot: Finds the best next shot to make according to probability.
-   * 
-   * @param   current state of board
-   * @return  next shot as a string
-   */
-  public String getNextPDFShot (Board board) {
-    if (isShipPossible(board, 5)) calcProbs(board, 5);
-    else if (isShipPossible(board, 4)) calcProbs(board, 4);
-    else if (isShipPossible(board, 3)) calcProbs(board, 3);
-    else if (isShipPossible(board, 2)) calcProbs(board, 2);
-    
-    ruleOutShotsAndMisses(board);
-    testProbs();
-    
-    int highestProbSoFar = 0;
-    int[] bestMoveSoFar = new int[2];
-    for (int i = 0; i < 10; ++i) {
-      for (int j = 0; j < 10; ++j) {
-        if (probs[i][j] > highestProbSoFar) {
-          highestProbSoFar = probs[i][j];
-          bestMoveSoFar[0] = i;
-          bestMoveSoFar[1] = j;
-        }
-      }
-    }
-    String bestMove = bestMoveSoFar[0] + "," + bestMoveSoFar[1];
-    probs = new int[10][10];
-    return convertPairToCoord(bestMove);
-  }
-  
-  /**
    * convertPairToCoord: Converts a pair (X,X) to a coordinate (X0).
    * 
    * @param   input pair as a string
@@ -183,13 +190,6 @@ public class AIPlayer extends Player {
       }
     }
     return false;
-  }
-  
-  /**
-   * Ships getter method.
-   */
-  public String[] getShips () {
-    return ships;
   }
   
   /**
