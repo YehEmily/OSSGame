@@ -18,17 +18,17 @@ I want this game to be entertaining and beautiful - the kind of game that a lot 
 In addition, I realize that Java is less conducive to game development than some other languages, but I ultimately decided to pursue the games in Java anyway because I need to be able to use Java proficiently in the summer. Besides, Java GUIs are a confusing and amazing mess that I'd like to master eventually.
 
 ### Semester Schedule
-**Week of Feb. 13**: Write rough but playable drafts of a simple game to toy with ideas
-**February 20**: Pick one game idea and go deeper - implement AI (search, reaction mechanism, etc.) so that game can be played against computer
-**February 27**: Pick another game idea and write more rough drafts of it
-**March 6**: Go deeper on latest game
-**March 13**: Spring break; if I'm behind at this point, I'll catch up during the break, but if not, I'll continue developing the game
-**March 20**: Write more rough drafts of a third game
-**March 27**: Go deeper with newest game
-**April 3**: Continue developing all three games
-**April 10**: Insert both games into the overarching game
-**April 17**: Continue developing final game (and inner games)
-**April 24**: Put final touches on the game and get it ready for submission/Olin Expo
+**Week of Feb. 13**: Write rough but playable drafts of a simple game to toy with ideas  
+**February 20**: Pick one game idea and go deeper - implement AI (search, reaction mechanism, etc.) so that game can be played against computer  
+**February 27**: Pick another game idea and write more rough drafts of it  
+**March 6**: Go deeper on latest game  
+**March 13**: Spring break; if I'm behind at this point, I'll catch up during the break, but if not, I'll continue developing the game  
+**March 20**: Write more rough drafts of a third game  
+**March 27**: Go deeper with newest game  
+**April 3**: Continue developing all three games  
+**April 10**: Insert both games into the overarching game  
+**April 17**: Continue developing final game (and inner games)  
+**April 24**: Put final touches on the game and get it ready for submission/Olin Expo  
 **May 1**: Final week - final project completion and submission!
 
 ### Other Things I Should Explain But Will Do So Later
