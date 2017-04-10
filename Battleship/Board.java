@@ -1,37 +1,100 @@
+import java.util.*;
+
 public class Board {
   
   private char[] rowNames = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'};
   private int[][] board;
+  private LinkedList<String[]> ships;
+  private LinkedList<Integer[]> shipsCount;
   
   public Board () {
     board = new int[10][10];
+    ships = new LinkedList<String[]>();
+    shipsCount = new LinkedList<Integer[]>();
   }
   
   public void placeShip (String c, String d, int length) {
     int[] result = convertCoord(c);
     int row = result[0]; int column = result[1];
     String direction = d.toUpperCase();
+    String[] coords = new String[length];
+    Integer[] marks = new Integer[length];
     
     if (direction.equals("VERTICAL")) { // Keep column fixed
       for (int i = row; i < (row+length); ++i) {
         board[i][column] = 5;
+        coords[i-row] = "" + rowNames[i] + column;
+        marks[i-row] = 1;
       }
     } else { // Keep row fixed
       for (int i = column; i < (column+length); ++i) {
         board[row][i] = 5;
+        coords[i-column] = "" + rowNames[row] + i;
+        marks[i-column] = 1;
       }
     }
+    ships.add(coords);
+    shipsCount.add(marks);
+//    System.out.println(shipsCount.get(0)[0]);
   }
+  
+  public LinkedList<String[]> getShips () {
+    return ships;
+  }
+  
+//  public void testShips () {
+//    for (int i = 0; i < ships.size(); ++i) {
+//      String[] s = ships.get(i);
+//      for (int j = 0; j < s.length; ++j) {
+//        System.out.println(s[j]);
+//      }
+//    }
+//  }
   
   public boolean isHit (String coordinate) {
     int[] coords = convertCoord(coordinate);
     if (board[coords[0]][coords[1]] == 5) {
       board[coords[0]][coords[1]] = 7;
+      for (int i = 0; i < ships.size(); ++i) {
+        for (int j = 0; j < ships.get(i).length; ++j) {
+          if (ships.get(i)[j].equals("" + rowNames[coords[0]] + coords[1])) {
+            shipsCount.get(i)[j] = -1;
+          }
+        }
+      }
       return true;
     } else {
       board[coords[0]][coords[1]] = -1;
       return false;
     }
+  }
+  
+  public boolean isShipSunk (int shipSize) {
+    int index = -1;
+    switch (shipSize) {
+      case 5: index = 0;
+      break;
+      case 4: index = 1;
+      break;
+      case 3: index = 2;
+      break;
+      case 33: index = 3; // No good way to represent the second 3-long ship
+      break;
+      case 2: index = 4;
+      break;
+      default: System.out.println("Invalid ship size");
+      break;
+    }
+    if (index != -1) {
+//      System.out.println(shipsCount);
+      for (int i = 0; i < shipsCount.get(index).length; ++i) {
+        if (shipsCount.get(index)[i] != -1) {
+          return false;
+        }
+      }
+      return true;
+    }
+    return false;
   }
   
   public boolean isValidShot (String coordinate) {

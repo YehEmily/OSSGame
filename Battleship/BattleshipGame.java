@@ -14,10 +14,6 @@ public class BattleshipGame {
   public BattleshipGame () {
     ai = new AIPlayer("AI");
     p = new Player("Player 1");
-//    System.out.println("What's your name?");
-//    Scanner s = new Scanner(System.in);
-//    p = new Player(s.next());
-//    s.close();
     isPlayerTurn = true; // Player starts
     isGameOver = false;
     aiBoard = new Board();
@@ -29,8 +25,8 @@ public class BattleshipGame {
    */
   public void play () {
     placeUserShipsFromInput("ships.txt");
-//    placeUserShips();
     placeAIShips();
+//    ai.getBoard().testShips();
     
     while (!isGameOver) {
       
@@ -51,7 +47,6 @@ public class BattleshipGame {
       
       while (!isPlayerTurn) { // AI's turn
         System.out.println("It's the AI's turn! Give it a second to pick a coordinate.");
-//        String nextShot = ai.getNextShot();
         String nextShot = ai.getNextPDFShot(aiBoard);
         boolean isHit = p.getBoard().isHit(nextShot); // Check if hit
         if (isHit) {
@@ -105,7 +100,7 @@ public class BattleshipGame {
     int[] ship_lengths = {5, 4, 3, 3, 2};
     for (int i = 0; i < ships.length; ++i) {
       String ship = ships[i];
-      b.placeShip(convertCoord(ship)[0], convertCoord(ship)[1], ship_lengths[i]); 
+      b.placeShip(convertCoord(ship)[0], convertCoord(ship)[1], ship_lengths[i]);
     }
   }
   

@@ -25,7 +25,7 @@ public class BattleshipBetweenAIs {
       count++;
       while (isAI1Turn) { // AI 1's turn
         System.out.println("It's AI 1's turn!");
-        String nextShot = ai1.getNextPDFShot(aiBoard);
+        String nextShot = ai1.getNextPDFShot_Improved(ai2.getBoard());
         boolean isHit = ai2.getBoard().isHit(nextShot); // Check if hit
         if (isHit) {
           aiBoard.addAction(nextShot, 7);

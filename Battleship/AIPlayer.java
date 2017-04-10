@@ -19,20 +19,118 @@ public class AIPlayer extends Player {
     probs = new int[10][10];
   }
   
+  public int[][] sumProbs (int[][] b5, int[][] b4, int[][] b3, int[][] b2, int[][] b33) {
+    int[][] results = new int[10][10];
+    for (int i = 0; i < 10; ++i) {
+      for (int j = 0; j < 10; ++j) {
+        results[i][j] = b5[i][j] + b4[i][j] + b3[i][j] + b2[i][j] + b33[i][j];
+      }
+    }
+    return results;
+  }
+  
+  public int[][] copyProbs () {
+    int[][] copy = new int[10][10];
+    for (int i = 0; i < 10; ++i) {
+      for (int j = 0; j < 10; ++j) {
+        copy[i][j] = probs[i][j];
+      }
+    }
+    return copy;
+  }
+  
+  public String getNextPDFShot_Improved (Board board) {
+    int[][] b2 = new int[10][10];
+    int[][] b3 = new int[10][10];
+    int[][] b4 = new int[10][10];
+    int[][] b5 = new int[10][10];
+    int[][] b33 = new int[10][10];
+    
+    if (!board.isShipSunk(5)) {
+      calcProbs(board, 5);
+      b5 = copyProbs();
+      probs = new int[10][10];
+    }
+    if (!board.isShipSunk(4)) {
+      calcProbs(board, 4);
+      b4 = copyProbs();
+      probs = new int[10][10];
+    }
+    if (!board.isShipSunk(3)) {
+      calcProbs(board, 3);
+      b3 = copyProbs();
+      probs = new int[10][10];
+    }
+    if (!board.isShipSunk(33)) {
+      calcProbs(board, 3);
+      b33 = copyProbs();
+      probs = new int[10][10];
+    }
+    if (!board.isShipSunk(2)) {
+      calcProbs(board, 2);
+      b2 = copyProbs();
+      probs = new int[10][10];
+    }
+    
+    probs = sumProbs(b5, b4, b3, b2, b33);
+    
+    ruleOutShotsAndMisses(board);
+//    testProbs();
+    
+    int highestProbSoFar = 0;
+    int[] bestMoveSoFar = new int[2];
+    for (int i = 0; i < 10; ++i) {
+      for (int j = 0; j < 10; ++j) {
+        if (probs[i][j] > highestProbSoFar) {
+          highestProbSoFar = probs[i][j];
+          bestMoveSoFar[0] = i;
+          bestMoveSoFar[1] = j;
+        }
+      }
+    }
+    String bestMove = bestMoveSoFar[0] + "," + bestMoveSoFar[1];
+    probs = new int[10][10];
+    return convertPairToCoord(bestMove);
+  }
+  
   /**
    * getNextPDFShot: Finds the best next shot to make according to probability.
    * 
    * @param   current state of board
    * @return  next shot as a string
    */
-  public String getNextPDFShot (Board board) {
-    if (isShipPossible(board, 5)) calcProbs(board, 5);
-    else if (isShipPossible(board, 4)) calcProbs(board, 4);
-    else if (isShipPossible(board, 3)) calcProbs(board, 3);
-    else if (isShipPossible(board, 2)) calcProbs(board, 2);
+  public String getNextPDFShot (Board board) { 
+    int[][] b2 = new int[10][10];
+    int[][] b3 = new int[10][10];
+    int[][] b4 = new int[10][10];
+    int[][] b5 = new int[10][10];
+    int[][] b33 = new int[10][10]; // Placeholder
+    
+    if (isShipPossible(board, 5)) {
+      calcProbs(board, 5);
+      b5 = copyProbs();
+      probs = new int[10][10];
+    }
+    if (isShipPossible(board, 4)) {
+      calcProbs(board, 4);
+      b4 = copyProbs();
+      probs = new int[10][10];
+    }
+    if (isShipPossible(board, 3)) {
+      calcProbs(board, 3);
+      b3 = copyProbs();
+      probs = new int[10][10];
+    }
+    if (isShipPossible(board, 2)) {
+      calcProbs(board, 2);
+      b2 = copyProbs();
+      probs = new int[10][10];
+    }
+    
+    probs = sumProbs(b5, b4, b3, b2, b33);
     
     ruleOutShotsAndMisses(board);
-    testProbs();
+//    testProbs();
     
     int highestProbSoFar = 0;
     int[] bestMoveSoFar = new int[2];
