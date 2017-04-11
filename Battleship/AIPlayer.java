@@ -35,22 +35,19 @@ public class AIPlayer extends Player {
     return results;
   }
   
-//  public void addHit (String s) {
-//    hits.add(s);
-//  }
-  
   private LinkedList<String> getHits (Board board) {
     LinkedList<String> results = new LinkedList<String>();
     int[][] b = board.getBoard();
     for (int i = 0; i < 10; ++i) {
       for (int j = 0; j < 10; ++j) {
-        if (b[i][j] == 5) {
+        if (b[i][j] == 7) {
+//          System.out.print("T");
           String s = rows[i] + j;
           results.add(s);
         }
       }
     }
-    System.out.println("Results: " + results);
+//    System.out.println("Results: " + results);
     return results;
   }
   
@@ -69,7 +66,7 @@ public class AIPlayer extends Player {
       int[] coords = convertCoord(nextHits.get(i));
       probs[coords[0]][coords[1]] += 100;
     }
-    System.out.println(nextHits);
+//    System.out.println(nextHits);
   }
   
   private boolean maybeColinear (String s1, String s2) {
@@ -83,17 +80,53 @@ public class AIPlayer extends Player {
     LinkedList<String> neighbors = new LinkedList<String>();
     int[] c1 = convertCoord(s1);
     int[] c2 = convertCoord(s2);
+    int index1 = 0;
+    int index2 = 0;
+    
     if ((c1[0] == c2[0]) && (Math.abs(c1[1] - c2[1]) <= largestShipNow)) {
-      for (int i = c1[1]; i < c2[1]; ++i) {
+      for (int i = c1[1]+1; i < c2[1]; ++i) { // Add inbetweens
         String s = "" + rows[c1[0]] + i;
         neighbors.add(s);
       }
-    } else {
-      for (int i = c1[0]; i < c2[0]; ++i) {
+      
+      if (c1[1] < c2[1]) {
+        index1 = c1[1];
+        index2 = c2[1];
+      } else {
+        index1 = c2[1];
+        index2 = c1[1];
+      }
+      
+      if (index1 > 0) {
+        neighbors.add("" + rows[c1[0]] + (index1-1));
+      }
+      if (index2 < 10) {
+        neighbors.add("" + rows[c1[0]] + (index2+1));
+      }
+     
+    } else if ((c1[1] == c2[1]) && (Math.abs(c1[0] - c2[0]) <= largestShipNow)) {
+      for (int i = c1[0]+1; i < c2[0]; ++i) {
         String s = "" + rows[i] + c1[1];
         neighbors.add(s);
       }
+      
+      if (c1[0] < c2[0]) {
+        index1 = c1[0];
+        index2 = c2[0];
+      } else {
+        index1 = c2[0];
+        index2 = c1[0];
+      }
+      
+      if (index1 > 0) {
+        neighbors.add("" + rows[index1-1] + c1[1]);
+      }
+      if (index2 < 10) {
+        neighbors.add("" + rows[index2+1] + c1[1]);
+      }
     }
+    
+    
     return neighbors;
   }
   
@@ -182,7 +215,7 @@ public class AIPlayer extends Player {
     increaseLinearHitProbability(board);
     
     ruleOutShotsAndMisses(board);
-    
+//    System.out.println(Arrays.deepToString(probs));
     
     int highestProbSoFar = 0;
     int[] bestMoveSoFar = new int[2];
