@@ -27,13 +27,14 @@ public class BattleshipBetweenAIs {
         System.out.println("It's AI 1's turn!");
         String nextShot = ai1.getNextPDFShot_Improved(ai2.getBoard());
         boolean isHit = ai2.getBoard().isHit(nextShot); // Check if hit
-//        if (isHit) {
-////          ai2.getBoard().addAction(nextShot, 7);
-////          System.out.println("A hit!");
-//        } else {
-////          ai2.getBoard().addAction(nextShot, -1);
-////          System.out.println("A miss!");
-//        }
+        if (isHit) {
+//          ai2.getBoard().addAction(nextShot, 7);
+//          System.out.println("A hit!");
+//          ai1.addHit(nextShot);
+        } else {
+//          ai2.getBoard().addAction(nextShot, -1);
+//          System.out.println("A miss!");
+        }
         isAI1Turn = false;
       }
       System.out.println("***** AI 1'S BOARD *****");

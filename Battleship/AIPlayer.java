@@ -5,6 +5,8 @@ public class AIPlayer extends Player {
   private String[] ships; // Pre-loaded ship locations
   private int[][] probs; // Probabilities of each square on board
   private String[] rows; // Names of rows
+  private LinkedList<String> hits;
+  private int largestShipNow;
   
   /**
    * Constructor
@@ -17,6 +19,10 @@ public class AIPlayer extends Player {
     rows = new String[] {"A", "B", "C", "D", "E", "F", "G", "H", "I", "J"};
     
     probs = new int[10][10];
+    
+    hits = new LinkedList<String>();
+    
+    largestShipNow = 5;
   }
   
   public int[][] sumProbs (int[][] b5, int[][] b4, int[][] b3, int[][] b2, int[][] b33) {
@@ -27,6 +33,86 @@ public class AIPlayer extends Player {
       }
     }
     return results;
+  }
+  
+//  public void addHit (String s) {
+//    hits.add(s);
+//  }
+  
+  private LinkedList<String> getHits (Board board) {
+    LinkedList<String> results = new LinkedList<String>();
+    int[][] b = board.getBoard();
+    for (int i = 0; i < 10; ++i) {
+      for (int j = 0; j < 10; ++j) {
+        if (b[i][j] == 5) {
+          String s = rows[i] + j;
+          results.add(s);
+        }
+      }
+    }
+    System.out.println("Results: " + results);
+    return results;
+  }
+  
+  public void increaseLinearHitProbability (Board b) {
+    LinkedList<String> nextHits = new LinkedList<String>();
+    LinkedList<String> hits = getHits(b);
+    for (int i = 0; i < hits.size(); ++i) {
+      for (int j = i+1; j < hits.size(); ++j) {
+        if (maybeColinear(hits.get(i), hits.get(j))) {
+          nextHits.addAll(getNeighbors(hits.get(i), hits.get(j)));
+        }
+      }
+    }
+    
+    for (int i = 0; i < nextHits.size(); ++i) {
+      int[] coords = convertCoord(nextHits.get(i));
+      probs[coords[0]][coords[1]] += 100;
+    }
+    System.out.println(nextHits);
+  }
+  
+  private boolean maybeColinear (String s1, String s2) {
+    int[] c1 = convertCoord(s1);
+    int[] c2 = convertCoord(s2);
+    return (((c1[0] == c2[0]) && (Math.abs(c1[1] - c2[1]) <= largestShipNow)) ||
+            ((c1[1] == c2[1]) && (Math.abs(c1[0] - c2[0]) <= largestShipNow)));
+  }
+  
+  private LinkedList<String> getNeighbors (String s1, String s2) {
+    LinkedList<String> neighbors = new LinkedList<String>();
+    int[] c1 = convertCoord(s1);
+    int[] c2 = convertCoord(s2);
+    if ((c1[0] == c2[0]) && (Math.abs(c1[1] - c2[1]) <= largestShipNow)) {
+      for (int i = c1[1]; i < c2[1]; ++i) {
+        String s = "" + rows[c1[0]] + i;
+        neighbors.add(s);
+      }
+    } else {
+      for (int i = c1[0]; i < c2[0]; ++i) {
+        String s = "" + rows[i] + c1[1];
+        neighbors.add(s);
+      }
+    }
+    return neighbors;
+  }
+  
+  public int[] convertCoord (String c) {
+    int[] result = new int[2];
+    result[0] = findRow(c.charAt(0));
+    result[1] = Integer.parseInt(c.substring(1, c.length()));
+    return result;
+  }
+  
+  private int findRow (char c) {
+    int count = -1;
+    for (int i = 0; i < rows.length; ++i) {
+      if (rows[i].charAt(0) == c) {
+        return count + 1;
+      }
+      count++;
+    }
+    return -1;
   }
   
   public int[][] copyProbs () {
@@ -49,23 +135,35 @@ public class AIPlayer extends Player {
     if (!board.isShipSunk(5)) {
       calcProbs(board, 5);
       b5 = copyProbs();
-      testProbs();
+//      testProbs();
       probs = new int[10][10];
+    } else {
+      largestShipNow = 4;
     }
     if (!board.isShipSunk(4)) {
       calcProbs(board, 4);
       b4 = copyProbs();
       probs = new int[10][10];
+    } else {
+      largestShipNow = 3;
     }
     if (!board.isShipSunk(3)) {
       calcProbs(board, 3);
       b3 = copyProbs();
       probs = new int[10][10];
+    } else {
+      if (board.isShipSunk(33)) {
+        largestShipNow = 2;
+      }
     }
     if (!board.isShipSunk(33)) {
       calcProbs(board, 3);
       b33 = copyProbs();
       probs = new int[10][10];
+    } else {
+      if (board.isShipSunk(3)) {
+        largestShipNow = 2;
+      }
     }
     if (!board.isShipSunk(2)) {
       calcProbs(board, 2);
@@ -80,6 +178,8 @@ public class AIPlayer extends Player {
 //    System.out.println(Arrays.deepToString(b33));
     
     probs = sumProbs(b5, b4, b3, b2, b33);
+    
+    increaseLinearHitProbability(board);
     
     ruleOutShotsAndMisses(board);
     
