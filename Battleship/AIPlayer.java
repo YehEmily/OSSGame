@@ -49,6 +49,7 @@ public class AIPlayer extends Player {
     if (!board.isShipSunk(5)) {
       calcProbs(board, 5);
       b5 = copyProbs();
+      testProbs();
       probs = new int[10][10];
     }
     if (!board.isShipSunk(4)) {
@@ -72,65 +73,16 @@ public class AIPlayer extends Player {
       probs = new int[10][10];
     }
     
-    probs = sumProbs(b5, b4, b3, b2, b33);
-    
-    ruleOutShotsAndMisses(board);
-//    testProbs();
-    
-    int highestProbSoFar = 0;
-    int[] bestMoveSoFar = new int[2];
-    for (int i = 0; i < 10; ++i) {
-      for (int j = 0; j < 10; ++j) {
-        if (probs[i][j] > highestProbSoFar) {
-          highestProbSoFar = probs[i][j];
-          bestMoveSoFar[0] = i;
-          bestMoveSoFar[1] = j;
-        }
-      }
-    }
-    String bestMove = bestMoveSoFar[0] + "," + bestMoveSoFar[1];
-    probs = new int[10][10];
-    return convertPairToCoord(bestMove);
-  }
-  
-  /**
-   * getNextPDFShot: Finds the best next shot to make according to probability.
-   * 
-   * @param   current state of board
-   * @return  next shot as a string
-   */
-  public String getNextPDFShot (Board board) { 
-    int[][] b2 = new int[10][10];
-    int[][] b3 = new int[10][10];
-    int[][] b4 = new int[10][10];
-    int[][] b5 = new int[10][10];
-    int[][] b33 = new int[10][10]; // Placeholder
-    
-    if (isShipPossible(board, 5)) {
-      calcProbs(board, 5);
-      b5 = copyProbs();
-      probs = new int[10][10];
-    }
-    if (isShipPossible(board, 4)) {
-      calcProbs(board, 4);
-      b4 = copyProbs();
-      probs = new int[10][10];
-    }
-    if (isShipPossible(board, 3)) {
-      calcProbs(board, 3);
-      b3 = copyProbs();
-      probs = new int[10][10];
-    }
-    if (isShipPossible(board, 2)) {
-      calcProbs(board, 2);
-      b2 = copyProbs();
-      probs = new int[10][10];
-    }
+//    System.out.println(Arrays.deepToString(b5));
+//    System.out.println(Arrays.deepToString(b4));
+//    System.out.println(Arrays.deepToString(b3));
+//    System.out.println(Arrays.deepToString(b2));
+//    System.out.println(Arrays.deepToString(b33));
     
     probs = sumProbs(b5, b4, b3, b2, b33);
     
     ruleOutShotsAndMisses(board);
-//    testProbs();
+    
     
     int highestProbSoFar = 0;
     int[] bestMoveSoFar = new int[2];
@@ -164,18 +116,24 @@ public class AIPlayer extends Player {
    */
   private void calcProbs (Board board, int shipSize) {
     int[][] b = board.getBoard();
+    
     for (int i = 0; i < 10; ++i) {
       for (int j = 0; j < 10; ++j) {
         
         if ((i + shipSize) < 11) { // VERTICAL SECTIONS
           if (!foundActionInRange(b, i, i+shipSize, j, j, -1)) { // if no misses
+            
             if (foundActionInRange(b, i, i+shipSize, j, j, 7)) { // if a hit
               for (int k = i; k < (i + shipSize); ++k) {
                 probs[k][j] += 2; // More likely near hit
               }
-            } else {
+            } else if (foundActionInRange(b, i, i+shipSize, j, j, 9)) { // If SUNK
               for (int k = i; k < (i + shipSize); ++k) {
-                probs[k][j] += 1; // Still likely in empty spaces
+                probs[k][j] = 0; // Can't exist in sunk space
+              }
+            } else { // If undiscovered
+              for (int k = i; k < (i + shipSize); ++k) {
+                probs[k][j] += 1;
               }
             }
           } else { // if miss in column
@@ -191,9 +149,13 @@ public class AIPlayer extends Player {
               for (int k = j; k < (j + shipSize); ++k) {
                 probs[i][k] += 2; // More likely near hit
               }
+            } else if (foundActionInRange(b, i, i, j, j+shipSize, 9)) { // If undiscovered
+              for (int k = j; k < (j + shipSize); ++k) {
+                probs[i][k] = 0; // Still likely in empty spaces
+              }
             } else {
               for (int k = j; k < (j + shipSize); ++k) {
-                probs[i][k] += 1; // Still likely in empty spaces
+                probs[i][k] += 1; // Ship cannot exist in sunk space
               }
             }
           } else { // if miss in row
@@ -216,42 +178,14 @@ public class AIPlayer extends Player {
     int[][] b = board.getBoard();
     for (int i = 0; i < 10; ++i) {
       for (int j = 0; j < 10; ++j) {
-        if ((b[i][j] == 7) || (b[i][j] == -1)) {
+        if ((b[i][j] == 7) || (b[i][j] == -1) || (b[i][j] == 9)) {
           probs[i][j] = 0;
         }
-        if ((b[j][i] == 7) || (b[j][i] == -1)) {
+        if ((b[j][i] == 7) || (b[j][i] == -1) || (b[j][i] == 9)) {
           probs[j][i] = 0;
         }
       }
     }
-  }
-  
-  /**
-   * isShipPossible: Determines whether a ship of a given size can be found in the
-   * current board.
-   * 
-   * @param   current state of board
-   * @param   size of ship to be found
-   * @return  whether it's possible for ship to be found on board or not
-   */
-  private boolean isShipPossible (Board board, int shipSize) {
-    LinkedList<Boolean> results = new LinkedList<Boolean>();
-    int[][] b = board.getBoard();
-    for (int i = 0; i < 10; ++i) {
-      for (int j = 0; j < 10; ++j) {
-        if ((i+shipSize) < 11) {
-          boolean flag = true;
-          for (int k = i; k < (i + shipSize); ++k) {
-            if (b[k][j] == -1) {
-              flag = false;
-            }
-          }
-          results.add(flag);
-        }
-      }
-    }
-    if (results.contains(true)) return true;
-    else return false;
   }
   
   /**
@@ -282,7 +216,7 @@ public class AIPlayer extends Player {
                                               int c1, int c2, int x) {
     for (int i = r1; i < r2; ++i) {
       for (int j = c1; j < c2; ++j) {
-        if (b[i][j] == x) { // x = 7 if hit, or x = -1 if miss
+        if (b[i][j] == x) { // x = 7 if hit, -1 if miss, 0 if undiscovered, 9 if sunk
           return true;
         }
       }

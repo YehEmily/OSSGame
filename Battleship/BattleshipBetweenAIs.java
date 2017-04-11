@@ -6,14 +6,14 @@ public class BattleshipBetweenAIs {
   private AIPlayerRandomShots ai2;
   
   private boolean isAI1Turn, isGameOver;
-  private Board aiBoard; // for ai1
+//  private Board aiBoard; // for ai1
   
   public BattleshipBetweenAIs () {
     ai1 = new AIPlayer("AI 1");
     ai2 = new AIPlayerRandomShots("AI 2");
     isAI1Turn = true;
     isGameOver = false;
-    aiBoard = new Board();
+//    aiBoard = new Board();
     play();
   }
   
@@ -27,13 +27,13 @@ public class BattleshipBetweenAIs {
         System.out.println("It's AI 1's turn!");
         String nextShot = ai1.getNextPDFShot_Improved(ai2.getBoard());
         boolean isHit = ai2.getBoard().isHit(nextShot); // Check if hit
-        if (isHit) {
-          aiBoard.addAction(nextShot, 7);
-          System.out.println("A hit!");
-        } else {
-          aiBoard.addAction(nextShot, -1);
-          System.out.println("A miss!");
-        }
+//        if (isHit) {
+////          ai2.getBoard().addAction(nextShot, 7);
+////          System.out.println("A hit!");
+//        } else {
+////          ai2.getBoard().addAction(nextShot, -1);
+////          System.out.println("A miss!");
+//        }
         isAI1Turn = false;
       }
       System.out.println("***** AI 1'S BOARD *****");
@@ -48,9 +48,9 @@ public class BattleshipBetweenAIs {
         }
         boolean isHit = ai1.getBoard().isHit(nextShot); // Check if hit
         if (isHit) {
-          System.out.println("A hit!");
+//          System.out.println("A hit!");
         } else {
-          System.out.println("A miss!");
+//          System.out.println("A miss!");
         }
         isAI1Turn = true;
       }

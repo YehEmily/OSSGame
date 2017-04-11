@@ -35,7 +35,6 @@ public class Board {
     }
     ships.add(coords);
     shipsCount.add(marks);
-//    System.out.println(shipsCount.get(0)[0]);
   }
   
   public LinkedList<String[]> getShips () {
@@ -63,13 +62,13 @@ public class Board {
         }
       }
       return true;
-    } else {
+    } else if (board[coords[0]][coords[1]] == 0) {
       board[coords[0]][coords[1]] = -1;
-      return false;
     }
+    return false;
   }
   
-  public boolean isShipSunk (int shipSize) {
+  private int returnShipIndex (int shipSize) {
     int index = -1;
     switch (shipSize) {
       case 5: index = 0;
@@ -85,13 +84,33 @@ public class Board {
       default: System.out.println("Invalid ship size");
       break;
     }
+    return index;
+  }
+  
+  public void markSunkShips (int shipSize) {
+    int index = returnShipIndex(shipSize);
+    String[] shipSunk = ships.get(index);
+    for (int i = 0; i < shipSunk.length; ++i) {
+      String coord = shipSunk[i];
+      int[] coords = convertCoord(coord);
+      board[coords[0]][coords[1]] = 9; // Signifies sunk
+    }
+//    System.out.println("***************************************");
+//    System.out.println("***************************************");
+//    System.out.println("SHIP SUNK *****************************");
+//    System.out.println("***************************************");
+//    System.out.println("***************************************");
+  }
+  
+  public boolean isShipSunk (int shipSize) {
+    int index = returnShipIndex(shipSize);
     if (index != -1) {
-//      System.out.println(shipsCount);
       for (int i = 0; i < shipsCount.get(index).length; ++i) {
         if (shipsCount.get(index)[i] != -1) {
           return false;
         }
       }
+      markSunkShips(shipSize);
       return true;
     }
     return false;
@@ -100,7 +119,8 @@ public class Board {
   public boolean isValidShot (String coordinate) {
     int[] coords = convertCoord(coordinate);
     if ((board[coords[0]][coords[1]] != -1) &&
-        (board[coords[0]][coords[1]] != 7)) {
+        (board[coords[0]][coords[1]] != 7) &&
+        (board[coords[0]][coords[1]] != 9)) {
       return true;
     }
     return false;
@@ -140,6 +160,8 @@ public class Board {
           s += "X ";
         } else if (board[i][j] == -1) {
           s += "O ";
+        } else if (board[i][j] == 9) {
+          s += "H ";
         } else {
           s += "- ";
         }
@@ -189,8 +211,9 @@ public class Board {
     String newString2 = newString1.replaceAll(" 5", " S"); // Ships
     String newString3 = newString2.replaceAll(" -1", " O"); // Misses
     String newString4 = newString3.replaceAll(" 7", " X"); // Hits
-    String newString5 = newString4.replaceAll("_", "");
-    String finalString = newString5.substring(0, newString5.length()-2);
+    String newString5 = newString4.replaceAll(" 9", " H");
+    String newString6 = newString5.replaceAll("_", "");
+    String finalString = newString6.substring(0, newString6.length()-2);
     return finalString;
   }
   
