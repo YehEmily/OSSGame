@@ -20,7 +20,7 @@ public class Board {
     String[] coords = new String[length];
     Integer[] marks = new Integer[length];
     
-    if (direction.equals("VERTICAL")) { // Keep column fixed
+    if ("VERTICAL".equals(direction)) { // Keep column fixed
       for (int i = row; i < (row+length); ++i) {
         board[i][column] = 5;
         coords[i-row] = "" + rowNames[i] + column;
@@ -95,11 +95,6 @@ public class Board {
       int[] coords = convertCoord(coord);
       board[coords[0]][coords[1]] = 9; // Signifies sunk
     }
-//    System.out.println("***************************************");
-//    System.out.println("***************************************");
-//    System.out.println("SHIP SUNK *****************************");
-//    System.out.println("***************************************");
-//    System.out.println("***************************************");
   }
   
   public boolean isShipSunk (int shipSize) {
@@ -118,12 +113,9 @@ public class Board {
   
   public boolean isValidShot (String coordinate) {
     int[] coords = convertCoord(coordinate);
-    if ((board[coords[0]][coords[1]] != -1) &&
+    return ((board[coords[0]][coords[1]] != -1) &&
         (board[coords[0]][coords[1]] != 7) &&
-        (board[coords[0]][coords[1]] != 9)) {
-      return true;
-    }
-    return false;
+        (board[coords[0]][coords[1]] != 9));
   }
   
   public boolean isGameOver () {
