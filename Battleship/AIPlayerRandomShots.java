@@ -1,3 +1,7 @@
+// Implement abstract classes
+// Give methods a "home"
+// Resolve 52 issues (some issues don't need to be fixed)
+
 import java.util.*;
 
 public class AIPlayerRandomShots extends Player {

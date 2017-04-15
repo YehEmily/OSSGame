@@ -5,7 +5,6 @@ public class AIPlayer extends Player {
   private String[] ships; // Pre-loaded ship locations
   private int[][] probs; // Probabilities of each square on board
   private String[] rows; // Names of rows
-  private LinkedList<String> hits;
   private int largestShipNow;
   
   /**
@@ -19,8 +18,6 @@ public class AIPlayer extends Player {
     rows = new String[] {"A", "B", "C", "D", "E", "F", "G", "H", "I", "J"};
     
     probs = new int[10][10];
-    
-    hits = new LinkedList<String>();
     
     largestShipNow = 5;
   }
@@ -168,7 +165,6 @@ public class AIPlayer extends Player {
     if (!board.isShipSunk(5)) {
       calcProbs(board, 5);
       b5 = copyProbs();
-//      testProbs();
       probs = new int[10][10];
     } else {
       largestShipNow = 4;
@@ -204,12 +200,6 @@ public class AIPlayer extends Player {
       probs = new int[10][10];
     }
     
-//    System.out.println(Arrays.deepToString(b5));
-//    System.out.println(Arrays.deepToString(b4));
-//    System.out.println(Arrays.deepToString(b3));
-//    System.out.println(Arrays.deepToString(b2));
-//    System.out.println(Arrays.deepToString(b33));
-    
     probs = sumProbs(b5, b4, b3, b2, b33);
     
     increaseLinearHitProbability(board);
@@ -217,8 +207,17 @@ public class AIPlayer extends Player {
     ruleOutShotsAndMisses(board);
 //    System.out.println(Arrays.deepToString(probs));
     
+    int[] bestMove = findBestMove();
+    
+    String bm = bestMove[0] + "," + bestMove[1];
+    probs = new int[10][10];
+    return convertPairToCoord(bm);
+  }
+  
+  private int[] findBestMove () {
     int highestProbSoFar = 0;
     int[] bestMoveSoFar = new int[2];
+    
     for (int i = 0; i < 10; ++i) {
       for (int j = 0; j < 10; ++j) {
         if (probs[i][j] > highestProbSoFar) {
@@ -228,9 +227,7 @@ public class AIPlayer extends Player {
         }
       }
     }
-    String bestMove = bestMoveSoFar[0] + "," + bestMoveSoFar[1];
-    probs = new int[10][10];
-    return convertPairToCoord(bestMove);
+    return bestMoveSoFar;
   }
   
   /**
