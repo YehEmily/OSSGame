@@ -22,45 +22,48 @@ public class BattleshipBetweenAIs {
     while (!isGameOver) {
       count++;
       while (isAI1Turn) { // AI 1's turn
-        System.out.println("It's AI 1's turn!");
-        String nextShot = ai1.getNextPDFShot_Improved(ai2.getBoard());
-        boolean isHit = ai2.getBoard().isHit(nextShot); // Check if hit
-//        if (isHit) {
-////          ai2.getBoard().addAction(nextShot, 7);
-////          System.out.println("A hit!");
-////          ai1.addHit(nextShot);
-//        } else {
-////          ai2.getBoard().addAction(nextShot, -1);
-////          System.out.println("A miss!");
-//        }
-        isAI1Turn = false;
+        playAI1();
       }
+      
       System.out.println("***** AI 1'S BOARD *****");
       System.out.println(ai1.getBoard().toHiddenString());
       if (ai1.getBoard().isGameOver()) isGameOver = true;
       
       while (!isAI1Turn) { // AI 2's turn
-        System.out.println("It's AI 2's turn!");
-        String nextShot = ai2.getNextShot();
-        while (!ai1.getBoard().isValidShot(nextShot)) {
-          nextShot = ai2.getNextShot();
-        }
-        boolean isHit = ai1.getBoard().isHit(nextShot); // Check if hit
-        if (isHit) {
-//          System.out.println("A hit!");
-        } else {
-//          System.out.println("A miss!");
-        }
-        isAI1Turn = true;
+        playAI2();
       }
+      
       System.out.println("***** AI 2'S BOARD *****");
       System.out.println(ai2.getBoard().toHiddenString());
       if (isGameOver = ai2.getBoard().isGameOver()) isGameOver = true;
     }
+    
     System.out.println("Congratulations, game over!");
     System.out.println("Game finished in " + count + " moves!");
     if (ai2.getBoard().isGameOver()) System.out.println("The winner is AI 1, the PDF algorithm!");
     if (ai1.getBoard().isGameOver()) System.out.println("The winner is AI 2, the searching/hunting algorithm!");
+  }
+  
+  public void playAI1 () {
+    System.out.println("It's AI 1's turn!");
+        String nextShot = ai1.getNextPDFShot_Improved(ai2.getBoard());
+        ai2.getBoard().isHit(nextShot); // Check if hit
+        isAI1Turn = false;
+  }
+  
+  public void playAI2 () {
+    System.out.println("It's AI 2's turn!");
+    String nextShot = ai2.getNextShot();
+    while (!ai1.getBoard().isValidShot(nextShot)) {
+      nextShot = ai2.getNextShot();
+    }
+    boolean isHit = ai1.getBoard().isHit(nextShot); // Check if hit
+        if (isHit) {
+          System.out.println("A hit!");
+        } else {
+          System.out.println("A miss!");
+        }
+    isAI1Turn = true;
   }
   
   public void placeAIShips () {
