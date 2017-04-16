@@ -8,8 +8,8 @@ import javax.swing.*;
  */
 public class calcEvPokes {
   
-  boolean done;
-  int total_pokes;
+  private boolean done;
+  private int total_pokes;
   
   /**
    * Constructor

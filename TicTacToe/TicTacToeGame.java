@@ -40,7 +40,7 @@ public class TicTacToeGame {
       System.out.println(toString());
       if (checkGameOver()) break;
     }
-    if (!winner.equals("")) {
+    if (!"".equals(winner)) {
       System.out.println("Congratulations! " + winner + " has won!");
     } else {
       System.out.println("No more moves remaining. It's a draw!");
