@@ -2,11 +2,11 @@ import java.util.*;
 
 public class TicTacToeGame {
   
-  Player user;
-  AIPlayer computer;
-  boolean isGameOver;
-  Board board;
-  String winner;
+  private Player user;
+  private AIPlayer computer;
+  private boolean isGameOver;
+  private Board board;
+  private String winner;
   
   /**
    * Constructor

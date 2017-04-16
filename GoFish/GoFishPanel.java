@@ -241,7 +241,7 @@ public class GoFishPanel extends JPanel {
     for (int i = 0; i < hand.size(); ++i) {
       JButton button = new JButton();
       button.addActionListener(new ButtonListener());
-      if (playerName.equals("User")) {
+      if ("User".equals(playerName)) {
         Card card = hand.get(i);
         button.setIcon(createImageIcon(card));
         button.setBackground(Color.WHITE);

@@ -3,7 +3,6 @@ import javax.swing.JOptionPane;
 
 public class GoFish {
   
-  private Deck d;
   private Player user;
   private AIPlayer computer;
   private Stack<Card> deck;
@@ -14,9 +13,8 @@ public class GoFish {
     user = new Player();
     if (name.length() > 0) user = new Player(name);
     
-    d = new Deck();
     computer = new AIPlayer("Computer");
-    deck = d.getDeck();
+    deck = new Deck().getDeck();
     
     drawCard(5, user); drawCard(5, computer);
     
@@ -39,8 +37,7 @@ public class GoFish {
   }
   
   public boolean isMatch (Card a, Card b) {
-    if (a.equals(b)) return true;
-    return false;
+    return (a.equals(b));
   }
   
   public void removeMatch (Player player, Card a, Card b) {
