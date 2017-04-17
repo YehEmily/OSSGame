@@ -24,42 +24,43 @@ public class BattleshipGame {
    * Main gameplay happens here
    */
   public void play () {
-    placeUserShipsFromInput("ships.txt");
+    placeUserShips();
+//    placeUserShipsFromInput("ships.txt");
     placeAIShips();
     
     while (!isGameOver) {
       
       while (isPlayerTurn) { // Player's turn
-//        System.out.println("It's your turn! Enter a coordinate to shoot.");
+        System.out.println("It's your turn! Enter a coordinate to shoot.");
         String coordinate = userQuery();
         boolean isHit = ai.getBoard().isHit(coordinate); // Check if hit
         if (isHit) {
-//          System.out.println("Congratulations! It's a hit!");
+          System.out.println("Congratulations! It's a hit!");
         } else {
-//          System.out.println("Drat, looks like it's a miss!");
+          System.out.println("Drat, looks like it's a miss!");
         }
         isPlayerTurn = false;
       }
-//      System.out.println("***** AI'S BOARD *****");
-//      System.out.println(ai.getBoard().toHiddenString());
+      System.out.println("***** AI'S BOARD *****");
+      System.out.println(ai.getBoard().toHiddenString());
       isGameOver = ai.getBoard().isGameOver();
       
       while (!isPlayerTurn) { // AI's turn
-//        System.out.println("It's the AI's turn! Give it a second to pick a coordinate.");
-//        System.out.println(Arrays.deepToString(p.getBoard().getBoard()));
+        System.out.println("It's the AI's turn! Give it a second to pick a coordinate.");
+        System.out.println(Arrays.deepToString(p.getBoard().getBoard()));
         String nextShot = ai.getNextShot(p.getBoard());
         boolean isHit = p.getBoard().isHit(nextShot); // Check if hit
         if (isHit) {
           aiBoard.addAction(nextShot, 7);
-//          System.out.println("Oh! The AI has made a hit!");
+          System.out.println("Oh! The AI has made a hit!");
         } else {
-//          System.out.println("The AI missed!");
+          System.out.println("The AI missed!");
           aiBoard.addAction(nextShot, -1);
         }
         isPlayerTurn = true;
       }
-//      System.out.println("***** YOUR BOARD *****");
-//      System.out.println(p.getBoard());
+      System.out.println("***** YOUR BOARD *****");
+      System.out.println(p.getBoard());
       isGameOver = p.getBoard().isGameOver();
     }
     

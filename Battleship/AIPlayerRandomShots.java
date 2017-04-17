@@ -33,6 +33,7 @@ public class AIPlayerRandomShots extends AIPlayerObject {
       int col = r.nextInt(10);
       result = Character.toString(rowNames[row]) + col;
     }
+    System.out.println(result);
     return result;
   }
   

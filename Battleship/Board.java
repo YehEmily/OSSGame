@@ -108,7 +108,9 @@ public class Board {
    */
   public boolean isValidShot (String coordinate) {
     int[] coords = convertCoord(coordinate);
-    return (board[coords[0]][coords[1]] == 0);
+    return ((board[coords[0]][coords[1]] != 9) &&
+            (board[coords[0]][coords[1]] != 7) &&
+            (board[coords[0]][coords[1]] != -1));
   }
   
   /**
