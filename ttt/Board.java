@@ -63,10 +63,8 @@ public class Board {
         if ((board[i][j]==0) && (i != j)) { // Don't add doubles yet
           moves.add(new Move(i, j));
         }
-        if (board[j][i]==0) {
-          if (i != j) { // Don't add doubles yet
-            moves.add(new Move(j, i));
-          }
+        if ((board[j][i]==0) && (i != j)) { // Don't add doubles yet
+          moves.add(new Move(j, i));
         }
       }
     }
