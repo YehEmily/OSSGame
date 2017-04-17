@@ -16,149 +16,18 @@ public class AIPlayer extends AIPlayerObject {
     ships = new String[] {"A1,VERTICAL", "C5,HORIZONTAL", "F9,VERTICAL",
       "H5,HORIZONTAL", "J0,HORIZONTAL"};
     rows = new String[] {"A", "B", "C", "D", "E", "F", "G", "H", "I", "J"};
-    
     probs = new int[10][10];
-    
     largestShipNow = 5;
   }
   
   /**
-   * sumProbs: Adds up probabilities of finding 5-long, 4-long, etc. ships to create
-   * a more cohesive PDF.
+   * getNextShot: Main method to find next shot. Based on *improved* PDF algorithm, in which
+   * probabilities are derived from (at most) 5 different PDFs to represent the 5 different
+   * ships (albeit only 4 different ship sizes).
    * 
-   * @param   probabilities of finding each ship (x5 integer arrays)
-   * @return  final probability distribution as an integer array
+   * @param   current state of board
+   * @return  next shot (string)
    */
-  private int[][] sumProbs (int[][] b5, int[][] b4, int[][] b3, int[][] b2, int[][] b33) {
-    int[][] results = new int[10][10];
-    for (int i = 0; i < 10; ++i) {
-      for (int j = 0; j < 10; ++j) {
-        results[i][j] = b5[i][j] + b4[i][j] + b3[i][j] + b2[i][j] + b33[i][j];
-      }
-    }
-    return results;
-  }
-  
-  private LinkedList<String> getHits (Board board) {
-    LinkedList<String> results = new LinkedList<String>();
-    int[][] b = board.getBoard();
-    for (int i = 0; i < 10; ++i) {
-      for (int j = 0; j < 10; ++j) {
-        if (b[i][j] == 7) {
-          String s = rows[i] + j;
-          results.add(s);
-        }
-      }
-    }
-    return results;
-  }
-  
-  public void increaseLinearHitProbability (Board b) {
-    LinkedList<String> nextHits = new LinkedList<String>();
-    LinkedList<String> hits = getHits(b);
-    for (int i = 0; i < hits.size(); ++i) {
-      for (int j = i+1; j < hits.size(); ++j) {
-        if (maybeColinear(hits.get(i), hits.get(j))) {
-          nextHits.addAll(getNeighbors(hits.get(i), hits.get(j)));
-        }
-      }
-    }
-    
-    for (int i = 0; i < nextHits.size(); ++i) {
-      int[] coords = convertCoord(nextHits.get(i));
-      probs[coords[0]][coords[1]] += 100;
-    }
-//    System.out.println(nextHits);
-  }
-  
-  private boolean maybeColinear (String s1, String s2) {
-    int[] c1 = convertCoord(s1);
-    int[] c2 = convertCoord(s2);
-    return (((c1[0] == c2[0]) && (Math.abs(c1[1] - c2[1]) <= largestShipNow)) ||
-            ((c1[1] == c2[1]) && (Math.abs(c1[0] - c2[0]) <= largestShipNow)));
-  }
-  
-  private LinkedList<String> getNeighbors (String s1, String s2) {
-    LinkedList<String> neighbors = new LinkedList<String>();
-    int[] c1 = convertCoord(s1);
-    int[] c2 = convertCoord(s2);
-    int index1 = 0;
-    int index2 = 0;
-    
-    if ((c1[0] == c2[0]) && (Math.abs(c1[1] - c2[1]) <= largestShipNow)) {
-      for (int i = c1[1]+1; i < c2[1]; ++i) { // Add inbetweens
-        String s = "" + rows[c1[0]] + i;
-        neighbors.add(s);
-      }
-      
-      if (c1[1] < c2[1]) {
-        index1 = c1[1];
-        index2 = c2[1];
-      } else {
-        index1 = c2[1];
-        index2 = c1[1];
-      }
-      
-      if (index1 > 0) {
-        neighbors.add("" + rows[c1[0]] + (index1-1));
-      }
-      if (index2 < 10) {
-        neighbors.add("" + rows[c1[0]] + (index2+1));
-      }
-     
-    } else if ((c1[1] == c2[1]) && (Math.abs(c1[0] - c2[0]) <= largestShipNow)) {
-      for (int i = c1[0]+1; i < c2[0]; ++i) {
-        String s = "" + rows[i] + c1[1];
-        neighbors.add(s);
-      }
-      
-      if (c1[0] < c2[0]) {
-        index1 = c1[0];
-        index2 = c2[0];
-      } else {
-        index1 = c2[0];
-        index2 = c1[0];
-      }
-      
-      if (index1 > 0) {
-        neighbors.add("" + rows[index1-1] + c1[1]);
-      }
-      if (index2 < 10) {
-        neighbors.add("" + rows[index2+1] + c1[1]);
-      }
-    }
-    
-    return neighbors;
-  }
-  
-  public int[] convertCoord (String c) {
-    int[] result = new int[2];
-    result[0] = findRow(c.charAt(0));
-    result[1] = Integer.parseInt(c.substring(1, c.length()));
-    return result;
-  }
-  
-  private int findRow (char c) {
-    int count = -1;
-    for (int i = 0; i < rows.length; ++i) {
-      if (rows[i].charAt(0) == c) {
-        return count + 1;
-      }
-      count++;
-    }
-    return -1;
-  }
-  
-  public int[][] copyProbs () {
-    int[][] copy = new int[10][10];
-    for (int i = 0; i < 10; ++i) {
-      for (int j = 0; j < 10; ++j) {
-        copy[i][j] = probs[i][j];
-      }
-    }
-    return copy;
-  }
-  
   public String getNextShot (Board board) {
     int[][] b2 = new int[10][10];
     int[][] b3 = new int[10][10];
@@ -217,6 +86,11 @@ public class AIPlayer extends AIPlayerObject {
     return convertPairToCoord(bm);
   }
   
+  /**
+   * findBestMove: Finds best move based on PDF algorithm.
+   * 
+   * @return  best move in the form of an integer array
+   */
   private int[] findBestMove () {
     int highestProbSoFar = 0;
     int[] bestMoveSoFar = new int[2];
@@ -231,6 +105,19 @@ public class AIPlayer extends AIPlayerObject {
       }
     }
     return bestMoveSoFar;
+  }
+  
+  /**
+   * Copies probability board to another board.
+   */
+  private int[][] copyProbs () {
+    int[][] copy = new int[10][10];
+    for (int i = 0; i < 10; ++i) {
+      for (int j = 0; j < 10; ++j) {
+        copy[i][j] = probs[i][j];
+      }
+    }
+    return copy;
   }
   
   /**
@@ -346,7 +233,7 @@ public class AIPlayer extends AIPlayerObject {
    * @return  true if found hit or miss, false otherwise
    */
   private boolean foundActionInRange (int[][] b, int r1, int r2,
-                                              int c1, int c2, int x) {
+                                      int c1, int c2, int x) {
     for (int i = r1; i < r2; ++i) {
       for (int j = c1; j < c2; ++j) {
         if (b[i][j] == x) { // x = 7 if hit, -1 if miss, 0 if undiscovered, 9 if sunk
@@ -358,16 +245,171 @@ public class AIPlayer extends AIPlayerObject {
   }
   
   /**
-   * testProbs: Used to check probability distribution within probs array.
+   * sumProbs: Adds up probabilities of finding 5-long, 4-long, etc. ships to create
+   * a more cohesive PDF.
+   * 
+   * @param   probabilities of finding each ship (x5 integer arrays)
+   * @return  final probability distribution as an integer array
    */
-  public void testProbs () {
-    String s = "";
+  private int[][] sumProbs (int[][] b5, int[][] b4, int[][] b3, int[][] b2, int[][] b33) {
+    int[][] results = new int[10][10];
     for (int i = 0; i < 10; ++i) {
       for (int j = 0; j < 10; ++j) {
-        s += probs[i][j] + " ";
+        results[i][j] = b5[i][j] + b4[i][j] + b3[i][j] + b2[i][j] + b33[i][j];
       }
-      s += "\n";
     }
-    System.out.println(s);
+    return results;
+  }
+  
+  /**
+   * getHits: Finds all the hits on the board and returns them in a linked list.
+   * 
+   * @param   current state of board
+   * @result  linked list of coordinates of hits
+   */
+  private LinkedList<String> getHits (Board board) {
+    LinkedList<String> results = new LinkedList<String>();
+    int[][] b = board.getBoard();
+    for (int i = 0; i < 10; ++i) {
+      for (int j = 0; j < 10; ++j) {
+        if (b[i][j] == 7) {
+          String s = rows[i] + j;
+          results.add(s);
+        }
+      }
+    }
+    return results;
+  }
+  
+  /**
+   * increaseLinearHitProbability: Increases the probability of shooting at a
+   * coordinate that is adjacent to a known hit.
+   * 
+   * @param   current state of board
+   */
+  private void increaseLinearHitProbability (Board b) {
+    LinkedList<String> nextHits = new LinkedList<String>();
+    LinkedList<String> hits = getHits(b);
+    for (int i = 0; i < hits.size(); ++i) {
+      for (int j = i+1; j < hits.size(); ++j) {
+        if (maybeColinear(hits.get(i), hits.get(j))) {
+          nextHits.addAll(getNeighbors(hits.get(i), hits.get(j)));
+        }
+      }
+    }
+    for (int i = 0; i < nextHits.size(); ++i) {
+      int[] coords = convertCoord(nextHits.get(i));
+      probs[coords[0]][coords[1]] += 100;
+    }
+  }
+  
+  /**
+   * maybeColinear: Determines whether two coordinates are colinear.
+   * 
+   * @param   two coordinates to compare
+   * @return  whether the two coordinates are colinear
+   */
+  private boolean maybeColinear (String s1, String s2) {
+    int[] c1 = convertCoord(s1);
+    int[] c2 = convertCoord(s2);
+    return (((c1[0] == c2[0]) && (Math.abs(c1[1] - c2[1]) <= largestShipNow)) ||
+            ((c1[1] == c2[1]) && (Math.abs(c1[0] - c2[0]) <= largestShipNow)));
+  }
+  
+  /**
+   * getNeighbors: Finds coordinates between and adjacent to two given coordinates.
+   * 
+   * @param   two coordinates as endpoints
+   * @return  linked list of neighboring coordinates
+   */
+  private LinkedList<String> getNeighbors (String s1, String s2) {
+    LinkedList<String> neighbors = new LinkedList<String>();
+    int[] c1 = convertCoord(s1);
+    int[] c2 = convertCoord(s2);
+    int index1 = 0;
+    int index2 = 0;
+    
+    if ((c1[0] == c2[0]) && (Math.abs(c1[1] - c2[1]) <= largestShipNow)) {
+      for (int i = c1[1]+1; i < c2[1]; ++i) { // Add inbetweens
+        String s = "" + rows[c1[0]] + i;
+        neighbors.add(s);
+      }
+      
+      if (c1[1] < c2[1]) {
+        index1 = c1[1];
+        index2 = c2[1];
+      } else {
+        index1 = c2[1];
+        index2 = c1[1];
+      }
+      
+      if (index1 > 0) {
+        neighbors.add("" + rows[c1[0]] + (index1-1));
+      }
+      if (index2 < 10) {
+        neighbors.add("" + rows[c1[0]] + (index2+1));
+      }
+      
+    } else if ((c1[1] == c2[1]) && (Math.abs(c1[0] - c2[0]) <= largestShipNow)) {
+      for (int i = c1[0]+1; i < c2[0]; ++i) {
+        String s = "" + rows[i] + c1[1];
+        neighbors.add(s);
+      }
+      
+      if (c1[0] < c2[0]) {
+        index1 = c1[0];
+        index2 = c2[0];
+      } else {
+        index1 = c2[0];
+        index2 = c1[0];
+      }
+      
+      if (index1 > 0) {
+        neighbors.add("" + rows[index1-1] + c1[1]);
+      }
+      if (index2 < 10) {
+        neighbors.add("" + rows[index2+1] + c1[1]);
+      }
+    }
+    
+    return neighbors;
+  }
+  
+//  /**
+//   * testProbs: Used to check probability distribution within probs array.
+//   */
+//  private void testProbs () {
+//    String s = "";
+//    for (int i = 0; i < 10; ++i) {
+//      for (int j = 0; j < 10; ++j) {
+//        s += probs[i][j] + " ";
+//      }
+//      s += "\n";
+//    }
+//    System.out.println(s);
+//  }
+  
+  /**
+   * convertCoord: Converts a given coordinate to an integer array.
+   */
+  protected int[] convertCoord (String c) {
+    int[] result = new int[2];
+    result[0] = findRow(c.charAt(0));
+    result[1] = Integer.parseInt(c.substring(1, c.length()));
+    return result;
+  }
+  
+  /**
+   * findRow: Finds the row number of a given row name.
+   */
+  protected int findRow (char c) {
+    int count = -1;
+    for (int i = 0; i < rows.length; ++i) {
+      if (rows[i].charAt(0) == c) {
+        return count + 1;
+      }
+      count++;
+    }
+    return -1;
   }
 }

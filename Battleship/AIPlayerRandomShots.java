@@ -131,7 +131,7 @@ public class AIPlayerRandomShots extends AIPlayerObject {
   /**
    * findRow: Finds row number of a given row name.
    */
-  private int findRow (char c) {
+  protected int findRow (char c) {
     
     int count = -1;
     for (int i = 0; i < rowNames.length; ++i) {
@@ -141,5 +141,9 @@ public class AIPlayerRandomShots extends AIPlayerObject {
       count++;
     }
     return -1;
+  }
+  
+  protected int[] convertCoord (String s) {
+    return null;
   }
 }

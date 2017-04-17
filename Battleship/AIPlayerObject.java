@@ -11,6 +11,10 @@ public abstract class AIPlayerObject extends Player {
     super(name);
   }
   
-  abstract String getNextShot(Board b);
+  abstract public String getNextShot(Board b);
+  
+  abstract protected int[] convertCoord(String s);
+  
+  abstract protected int findRow (char c);
   
 }

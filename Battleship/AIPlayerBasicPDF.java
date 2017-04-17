@@ -15,7 +15,7 @@ public class AIPlayerBasicPDF extends AIPlayerObject {
     rows = new String[] {"A", "B", "C", "D", "E", "F", "G", "H", "I", "J"};
     probs = new int[10][10];
   }
- 
+  
   /**
    * getNextShot: Main method to find next shot. Based on PDF algorithm.
    * 
@@ -45,6 +45,18 @@ public class AIPlayerBasicPDF extends AIPlayerObject {
     return convertPairToCoord(bm);
   }
   
+  /**
+   * Ships getter method.
+   */
+  public String[] getShips () {
+    return ships;
+  }
+  
+  /**
+   * findBestMove: Finds best move based on PDF algorithm.
+   * 
+   * @return  best move in the form of an integer array
+   */
   private int[] findBestMove () {
     int highestProbSoFar = 0;
     int[] bestMoveSoFar = new int[2];
@@ -59,13 +71,6 @@ public class AIPlayerBasicPDF extends AIPlayerObject {
       }
     }
     return bestMoveSoFar;
-  }
-  
-  /**
-   * Ships getter method.
-   */
-  public String[] getShips () {
-    return ships;
   }
   
   /**
@@ -185,18 +190,26 @@ public class AIPlayerBasicPDF extends AIPlayerObject {
     return false;
   }
   
-  /**
-   * testProbs: Used to check probability distribution within probs array.
-   */
-  public void testProbs () {
-    String s = "";
-    for (int i = 0; i < 10; ++i) {
-      for (int j = 0; j < 10; ++j) {
-        s += probs[i][j] + " ";
-      }
-      s += "\n";
-    }
-    System.out.println(s);
+  protected int[] convertCoord (String s) {
+    return null;
   }
+  
+  protected int findRow (char c) {
+    return 0;
+  }
+  
+//  /**
+//   * testProbs: Used to check probability distribution within probs array.
+//   */
+//  private void testProbs () {
+//    String s = "";
+//    for (int i = 0; i < 10; ++i) {
+//      for (int j = 0; j < 10; ++j) {
+//        s += probs[i][j] + " ";
+//      }
+//      s += "\n";
+//    }
+//    System.out.println(s);
+//  }
   
 }
