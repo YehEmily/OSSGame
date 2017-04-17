@@ -26,7 +26,6 @@ public class BattleshipGame {
   public void play () {
     placeUserShipsFromInput("ships.txt");
     placeAIShips();
-//    ai.getBoard().testShips();
     
     while (!isGameOver) {
       

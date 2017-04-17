@@ -1,11 +1,8 @@
-import java.util.*;
-
 public class AIPlayerBasicPDF extends Player {
   
   private String[] ships; // Pre-loaded ship locations
   private int[][] probs; // Probabilities of each square on board
   private String[] rows; // Names of rows
-  private int largestShipNow;
   
   /**
    * Constructor
@@ -16,134 +13,16 @@ public class AIPlayerBasicPDF extends Player {
     ships = new String[] {"A1,VERTICAL", "C5,HORIZONTAL", "F9,VERTICAL",
       "H5,HORIZONTAL", "J0,HORIZONTAL"};
     rows = new String[] {"A", "B", "C", "D", "E", "F", "G", "H", "I", "J"};
-    
     probs = new int[10][10];
-    
-    largestShipNow = 5;
   }
-  
-
-  
-  private LinkedList<String> getHits (Board board) {
-    LinkedList<String> results = new LinkedList<String>();
-    int[][] b = board.getBoard();
-    for (int i = 0; i < 10; ++i) {
-      for (int j = 0; j < 10; ++j) {
-        if (b[i][j] == 7) {
-          String s = rows[i] + j;
-          results.add(s);
-        }
-      }
-    }
-    return results;
-  }
-  
-  public void increaseLinearHitProbability (Board b) {
-    LinkedList<String> nextHits = new LinkedList<String>();
-    LinkedList<String> hits = getHits(b);
-    for (int i = 0; i < hits.size(); ++i) {
-      for (int j = i+1; j < hits.size(); ++j) {
-        if (maybeColinear(hits.get(i), hits.get(j))) {
-          nextHits.addAll(getNeighbors(hits.get(i), hits.get(j)));
-        }
-      }
-    }
-    
-    for (int i = 0; i < nextHits.size(); ++i) {
-      int[] coords = convertCoord(nextHits.get(i));
-      probs[coords[0]][coords[1]] += 100;
-    }
-  }
-  
-  private boolean maybeColinear (String s1, String s2) {
-    int[] c1 = convertCoord(s1);
-    int[] c2 = convertCoord(s2);
-    return (((c1[0] == c2[0]) && (Math.abs(c1[1] - c2[1]) <= largestShipNow)) ||
-            ((c1[1] == c2[1]) && (Math.abs(c1[0] - c2[0]) <= largestShipNow)));
-  }
-  
-  private LinkedList<String> getNeighbors (String s1, String s2) {
-    LinkedList<String> neighbors = new LinkedList<String>();
-    int[] c1 = convertCoord(s1);
-    int[] c2 = convertCoord(s2);
-    int index1 = 0;
-    int index2 = 0;
-    
-    if ((c1[0] == c2[0]) && (Math.abs(c1[1] - c2[1]) <= largestShipNow)) {
-      for (int i = c1[1]+1; i < c2[1]; ++i) { // Add inbetweens
-        String s = "" + rows[c1[0]] + i;
-        neighbors.add(s);
-      }
-      
-      if (c1[1] < c2[1]) {
-        index1 = c1[1];
-        index2 = c2[1];
-      } else {
-        index1 = c2[1];
-        index2 = c1[1];
-      }
-      
-      if (index1 > 0) {
-        neighbors.add("" + rows[c1[0]] + (index1-1));
-      }
-      if (index2 < 10) {
-        neighbors.add("" + rows[c1[0]] + (index2+1));
-      }
-      
-    } else if ((c1[1] == c2[1]) && (Math.abs(c1[0] - c2[0]) <= largestShipNow)) {
-      for (int i = c1[0]+1; i < c2[0]; ++i) {
-        String s = "" + rows[i] + c1[1];
-        neighbors.add(s);
-      }
-      
-      if (c1[0] < c2[0]) {
-        index1 = c1[0];
-        index2 = c2[0];
-      } else {
-        index1 = c2[0];
-        index2 = c1[0];
-      }
-      
-      if (index1 > 0) {
-        neighbors.add("" + rows[index1-1] + c1[1]);
-      }
-      if (index2 < 10) {
-        neighbors.add("" + rows[index2+1] + c1[1]);
-      }
-    }
-    
-    return neighbors;
-  }
-  
-  public int[] convertCoord (String c) {
-    int[] result = new int[2];
-    result[0] = findRow(c.charAt(0));
-    result[1] = Integer.parseInt(c.substring(1, c.length()));
-    return result;
-  }
-  
-  private int findRow (char c) {
-    int count = -1;
-    for (int i = 0; i < rows.length; ++i) {
-      if (rows[i].charAt(0) == c) {
-        return count + 1;
-      }
-      count++;
-    }
-    return -1;
-  }
-  
-  public int[][] copyProbs () {
-    int[][] copy = new int[10][10];
-    for (int i = 0; i < 10; ++i) {
-      for (int j = 0; j < 10; ++j) {
-        copy[i][j] = probs[i][j];
-      }
-    }
-    return copy;
-  }
-  
-  public String getNextPDFShot_Improved (Board board) {
+ 
+  /**
+   * getNextShot: Main method to find next shot. Based on PDF algorithm.
+   * 
+   * @param   current state of board
+   * @return  next shot (string)
+   */
+  public String getNextShot (Board board) {
     if (!board.isShipSunk(5)) {
       calcProbs(board, 5);
     } else if (!board.isShipSunk(4)) {
@@ -155,8 +34,6 @@ public class AIPlayerBasicPDF extends Player {
     } else if (!board.isShipSunk(2)) {
       calcProbs(board, 2);
     }
-    
-    increaseLinearHitProbability(board);
     
     ruleOutShotsAndMisses(board);
     
