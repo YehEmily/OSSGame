@@ -1,3 +1,5 @@
+package TicTacToe;
+
 import java.util.*;
 
 public class AIPlayer extends Player {

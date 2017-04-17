@@ -1,3 +1,5 @@
+package TicTacToe;
+
 public class Move implements Comparable<Move> {
   
   private int first, second;

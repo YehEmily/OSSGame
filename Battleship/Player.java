@@ -1,3 +1,5 @@
+package Battleship;
+
 public class Player {
   
   private String name;

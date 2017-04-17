@@ -1,3 +1,5 @@
+package Battleship;
+
 public class AIPlayerBasicPDF extends AIPlayerObject {
   
   private String[] ships; // Pre-loaded ship locations

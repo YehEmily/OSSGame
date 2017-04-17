@@ -1,3 +1,5 @@
+package Battleship;
+
 import java.io.*;
 
 public class BattleshipBetweenAIs {
