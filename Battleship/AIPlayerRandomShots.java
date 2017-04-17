@@ -1,18 +1,12 @@
-// Implement abstract classes
-// Give methods a "home"
-// Resolve 52 issues (some issues don't need to be fixed)
-
 import java.util.*;
 
-public class AIPlayerRandomShots extends Player {
+public class AIPlayerRandomShots extends AIPlayerObject {
   
-//  private String[] ships;
   private Queue<String> queue;
   private LinkedList<String> hits;
   
   public AIPlayerRandomShots (String name) {
     super(name);
-//    ships = new String[] {"A1,VERTICAL", "C5,HORIZONTAL", "F9,VERTICAL", "H5,HORIZONTAL", "J0,HORIZONTAL"};
     queue = new LinkedList<String>();
     hits = new LinkedList<String>();
   }
@@ -110,7 +104,6 @@ public class AIPlayerRandomShots extends Player {
         result.add(r1); result.add(r2);
       }
     }
-//    System.out.println(result);
     return result;
   }
   

@@ -1,6 +1,6 @@
 import java.util.*;
 
-public class AIPlayer extends Player {
+public class AIPlayerBasicPDF extends Player {
   
   private String[] ships; // Pre-loaded ship locations
   private int[][] probs; // Probabilities of each square on board
@@ -11,7 +11,7 @@ public class AIPlayer extends Player {
    * Constructor
    * @param   name of AI
    */
-  public AIPlayer (String name) {
+  public AIPlayerBasicPDF (String name) {
     super(name);
     ships = new String[] {"A1,VERTICAL", "C5,HORIZONTAL", "F9,VERTICAL",
       "H5,HORIZONTAL", "J0,HORIZONTAL"};
@@ -22,22 +22,7 @@ public class AIPlayer extends Player {
     largestShipNow = 5;
   }
   
-  /**
-   * sumProbs: Adds up probabilities of finding 5-long, 4-long, etc. ships to create
-   * a more cohesive PDF.
-   * 
-   * @param   probabilities of finding each ship (x5 integer arrays)
-   * @return  final probability distribution as an integer array
-   */
-  private int[][] sumProbs (int[][] b5, int[][] b4, int[][] b3, int[][] b2, int[][] b33) {
-    int[][] results = new int[10][10];
-    for (int i = 0; i < 10; ++i) {
-      for (int j = 0; j < 10; ++j) {
-        results[i][j] = b5[i][j] + b4[i][j] + b3[i][j] + b2[i][j] + b33[i][j];
-      }
-    }
-    return results;
-  }
+
   
   private LinkedList<String> getHits (Board board) {
     LinkedList<String> results = new LinkedList<String>();
@@ -68,7 +53,6 @@ public class AIPlayer extends Player {
       int[] coords = convertCoord(nextHits.get(i));
       probs[coords[0]][coords[1]] += 100;
     }
-//    System.out.println(nextHits);
   }
   
   private boolean maybeColinear (String s1, String s2) {
@@ -105,7 +89,7 @@ public class AIPlayer extends Player {
       if (index2 < 10) {
         neighbors.add("" + rows[c1[0]] + (index2+1));
       }
-     
+      
     } else if ((c1[1] == c2[1]) && (Math.abs(c1[0] - c2[0]) <= largestShipNow)) {
       for (int i = c1[0]+1; i < c2[0]; ++i) {
         String s = "" + rows[i] + c1[1];
@@ -127,7 +111,6 @@ public class AIPlayer extends Player {
         neighbors.add("" + rows[index2+1] + c1[1]);
       }
     }
-    
     
     return neighbors;
   }
@@ -161,51 +144,17 @@ public class AIPlayer extends Player {
   }
   
   public String getNextPDFShot_Improved (Board board) {
-    int[][] b2 = new int[10][10];
-    int[][] b3 = new int[10][10];
-    int[][] b4 = new int[10][10];
-    int[][] b5 = new int[10][10];
-    int[][] b33 = new int[10][10];
-    
     if (!board.isShipSunk(5)) {
       calcProbs(board, 5);
-      b5 = copyProbs();
-      probs = new int[10][10];
-    } else {
-      largestShipNow = 4;
-    }
-    if (!board.isShipSunk(4)) {
+    } else if (!board.isShipSunk(4)) {
       calcProbs(board, 4);
-      b4 = copyProbs();
-      probs = new int[10][10];
-    } else {
-      largestShipNow = 3;
-    }
-    if (!board.isShipSunk(3)) {
+    } else if (!board.isShipSunk(3)) {
       calcProbs(board, 3);
-      b3 = copyProbs();
-      probs = new int[10][10];
-    } else {
-      if (board.isShipSunk(33)) {
-        largestShipNow = 2;
-      }
-    }
-    if (!board.isShipSunk(33)) {
+    } else if (!board.isShipSunk(33)) {
       calcProbs(board, 3);
-      b33 = copyProbs();
-      probs = new int[10][10];
-    } else {
-      if (board.isShipSunk(3)) {
-        largestShipNow = 2;
-      }
-    }
-    if (!board.isShipSunk(2)) {
+    } else if (!board.isShipSunk(2)) {
       calcProbs(board, 2);
-      b2 = copyProbs();
-      probs = new int[10][10];
     }
-    
-    probs = sumProbs(b5, b4, b3, b2, b33);
     
     increaseLinearHitProbability(board);
     
@@ -347,7 +296,7 @@ public class AIPlayer extends Player {
    * @return  true if found hit or miss, false otherwise
    */
   private boolean foundActionInRange (int[][] b, int r1, int r2,
-                                              int c1, int c2, int x) {
+                                      int c1, int c2, int x) {
     for (int i = r1; i < r2; ++i) {
       for (int j = c1; j < c2; ++j) {
         if (b[i][j] == x) { // x = 7 if hit, -1 if miss, 0 if undiscovered, 9 if sunk
@@ -371,4 +320,5 @@ public class AIPlayer extends Player {
     }
     System.out.println(s);
   }
+  
 }
