@@ -1,4 +1,4 @@
-package Battleship;
+package battleship;
 
 import java.io.*;
 import java.util.*;

@@ -1,4 +1,4 @@
-package GoFish;
+package gofish;
 
 import java.util.*;
 

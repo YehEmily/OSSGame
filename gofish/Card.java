@@ -1,4 +1,4 @@
-package GoFish;
+package gofish;
 
 public class Card {
   

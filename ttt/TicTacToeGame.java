@@ -1,4 +1,4 @@
-package TicTacToe;
+package ttt;
 
 import java.util.*;
 

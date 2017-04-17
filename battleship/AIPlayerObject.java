@@ -1,4 +1,4 @@
-package Battleship;
+package battleship;
 
 /**
  * AIPlayerObject class: Abstract class that all Battleship AIPlayers extend.

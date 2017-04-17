@@ -1,11 +1,10 @@
-package GoFish;
+package gofish;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.*;
 import javax.imageio.ImageIO;
 import java.io.*;
-import java.net.*;
 import java.awt.event.*;
 
 public class GoFishPanel extends JPanel {

@@ -1,4 +1,4 @@
-package TicTacToe;
+package ttt;
 
 public class Move implements Comparable<Move> {
   
