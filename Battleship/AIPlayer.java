@@ -1,6 +1,6 @@
 import java.util.*;
 
-public class AIPlayer extends Player {
+public class AIPlayer extends AIPlayerObject {
   
   private String[] ships; // Pre-loaded ship locations
   private int[][] probs; // Probabilities of each square on board
@@ -128,7 +128,6 @@ public class AIPlayer extends Player {
       }
     }
     
-    
     return neighbors;
   }
   
@@ -160,7 +159,7 @@ public class AIPlayer extends Player {
     return copy;
   }
   
-  public String getNextPDFShot_Improved (Board board) {
+  public String getNextShot (Board board) {
     int[][] b2 = new int[10][10];
     int[][] b3 = new int[10][10];
     int[][] b4 = new int[10][10];

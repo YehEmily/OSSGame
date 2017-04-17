@@ -47,7 +47,7 @@ public class BattleshipGame {
       while (!isPlayerTurn) { // AI's turn
 //        System.out.println("It's the AI's turn! Give it a second to pick a coordinate.");
 //        System.out.println(Arrays.deepToString(p.getBoard().getBoard()));
-        String nextShot = ai.getNextPDFShot_Improved(p.getBoard());
+        String nextShot = ai.getNextShot(p.getBoard());
         boolean isHit = p.getBoard().isHit(nextShot); // Check if hit
         if (isHit) {
           aiBoard.addAction(nextShot, 7);

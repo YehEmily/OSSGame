@@ -1,4 +1,4 @@
-public class AIPlayerBasicPDF extends Player {
+public class AIPlayerBasicPDF extends AIPlayerObject {
   
   private String[] ships; // Pre-loaded ship locations
   private int[][] probs; // Probabilities of each square on board
@@ -22,6 +22,7 @@ public class AIPlayerBasicPDF extends Player {
    * @param   current state of board
    * @return  next shot (string)
    */
+  @Override
   public String getNextShot (Board board) {
     if (!board.isShipSunk(5)) {
       calcProbs(board, 5);

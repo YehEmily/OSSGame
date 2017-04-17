@@ -46,16 +46,16 @@ public class BattleshipBetweenAIs {
   
   public void playAI1 () {
     System.out.println("It's AI 1's turn!");
-        String nextShot = ai1.getNextPDFShot_Improved(ai2.getBoard());
+        String nextShot = ai1.getNextShot(ai2.getBoard());
         ai2.getBoard().isHit(nextShot); // Check if hit
         isAI1Turn = false;
   }
   
   public void playAI2 () {
     System.out.println("It's AI 2's turn!");
-    String nextShot = ai2.getNextShot();
+    String nextShot = ai2.getNextShot(new Board());
     while (!ai1.getBoard().isValidShot(nextShot)) {
-      nextShot = ai2.getNextShot();
+      nextShot = ai2.getNextShot(new Board());
     }
     boolean isHit = ai1.getBoard().isHit(nextShot); // Check if hit
         if (isHit) {

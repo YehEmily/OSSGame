@@ -4,16 +4,26 @@ public class AIPlayerRandomShots extends AIPlayerObject {
   
   private Queue<String> queue;
   private LinkedList<String> hits;
+  private char[] rowNames;
   
+  /**
+   * Constructor.
+   */
   public AIPlayerRandomShots (String name) {
     super(name);
     queue = new LinkedList<String>();
     hits = new LinkedList<String>();
+    rowNames = new String("ABCDEFGHIJ").toCharArray();
   }
   
-  public String getNextShot () {
+  /**
+   * getNextShot: Randomly generates next shot, unless a hit was landed previously.
+   * 
+   * @param   current state of board
+   * @return  next shot coordinate (string)
+   */
+  public String getNextShot (Board b) {
     String result = "";
-    String[] rows = new String[] {"A", "B", "C", "D", "E", "F", "G", "H", "I", "J"};
     if (!queue.isEmpty()) { // A hit was made
       String c = queue.remove();
       result = c;
@@ -21,11 +31,16 @@ public class AIPlayerRandomShots extends AIPlayerObject {
       Random r = new Random();
       int row = r.nextInt(10);
       int col = r.nextInt(10);
-      result = rows[row] + col;
+      result = Character.toString(rowNames[row]) + col;
     }
     return result;
   }
   
+  /**
+   * addHit: If previous shot was successful, adds its neighbors to queue to try in following moves.
+   * 
+   * @param   coordinate of hit
+   */
   public void addHit (String coordinate) {
     LinkedList<String> candidates = getAdjCoords(coordinate);
     while (!candidates.isEmpty()) {
@@ -34,6 +49,12 @@ public class AIPlayerRandomShots extends AIPlayerObject {
     hits.add(coordinate);
   }
   
+  /**
+   * getAdjCoords: Returns neighboring coordinates to a given coordinate.
+   * 
+   * @param   coordinate to find neighbors for
+   * @return  linked list of neighboring coordinates
+   */
   private LinkedList<String> getAdjCoords (String coordinate) {
     LinkedList<String> result = new LinkedList<String>();
     String[] rows = new String[] {"A", "B", "C", "D", "E", "F", "G", "H", "I", "J"};
@@ -107,8 +128,11 @@ public class AIPlayerRandomShots extends AIPlayerObject {
     return result;
   }
   
+  /**
+   * findRow: Finds row number of a given row name.
+   */
   private int findRow (char c) {
-    char[] rowNames = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'};
+    
     int count = -1;
     for (int i = 0; i < rowNames.length; ++i) {
       if (rowNames[i] == c) {
