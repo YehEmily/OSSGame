@@ -1,8 +1,11 @@
+package GoFish;
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.*;
 import javax.imageio.ImageIO;
 import java.io.*;
+import java.net.*;
 import java.awt.event.*;
 
 public class GoFishPanel extends JPanel {
@@ -248,7 +251,7 @@ public class GoFishPanel extends JPanel {
         user_hand.add(button);
       } else {
         try {
-          Image img = ImageIO.read(new File("Cards/mystery.png"));
+          Image img = ImageIO.read(new File("/home/emily/Desktop/OSSGame/GoFish/Cards/mystery.png"));
           ImageIcon ii = new ImageIcon(img);
           button.setIcon(ii);
           button.setBackground(Color.WHITE);
@@ -296,7 +299,9 @@ public class GoFishPanel extends JPanel {
     String cardType = card.getType();
     int cardNum = card.getNumber();
     try {
-      Image img = ImageIO.read(new File("Cards/" + cardType + cardNum + ".png"));
+      String path = "/home/emily/Desktop/OSSGame/GoFish/Cards/" +
+        cardType + cardNum + ".png";
+      Image img = ImageIO.read(new File(path));
       ImageIcon ii = new ImageIcon(img);
       return ii;
     } catch (Exception ex) {
@@ -340,7 +345,7 @@ public class GoFishPanel extends JPanel {
     
     deckButton = new JButton();
     try {
-      Image img = ImageIO.read(new File("Cards/mystery.png"));
+      Image img = ImageIO.read(new File("/home/emily/Desktop/OSSGame/GoFish/Cards/mystery.png"));
       ImageIcon ii = new ImageIcon(img);
       deckButton.setIcon(ii);
     } catch (Exception ex) {

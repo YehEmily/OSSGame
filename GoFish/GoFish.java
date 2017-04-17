@@ -1,3 +1,5 @@
+package GoFish;
+
 import java.util.*;
 import javax.swing.JOptionPane;
 

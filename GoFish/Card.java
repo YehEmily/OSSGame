@@ -1,3 +1,5 @@
+package GoFish;
+
 public class Card {
   
   private String type;
