@@ -15,7 +15,8 @@ public class AIPlayerRandomShots extends AIPlayerObject {
     super(name);
     queue = new LinkedList<String>();
     hits = new LinkedList<String>();
-    rowNames = new String("ABCDEFGHIJ").toCharArray();
+    String rows = "ABCDEFGHIJ";
+    rowNames = rows.toCharArray();
   }
   
   /**

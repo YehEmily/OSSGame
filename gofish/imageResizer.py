@@ -14,5 +14,5 @@ for i in range(1, 14):
 	for j in range(0, 4):
 		imagename = suits[j] + str(i) + ".png"
 		imageResizer(imagename)
-		
+
 imageResizer("mystery.png")

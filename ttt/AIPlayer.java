@@ -78,7 +78,7 @@ public class AIPlayer extends Player {
       while (!moves.isEmpty()) {
         Move m = moves.remove(); // Retrieve first possible move
         
-        if (currentPlayer.equals("Computer")) { // Computer's turn
+        if ("Computer".equals(currentPlayer)) { // Computer's turn
           b.addMark(m.getFirst(), m.getSecond(), false); // Temporarily add mark to board
           currentScore = findMMValue(b, "Player", depth+1); // Recurse
           if (currentScore > bestOffScore) {

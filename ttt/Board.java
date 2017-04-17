@@ -60,10 +60,8 @@ public class Board {
     LinkedList<Move> moves = new LinkedList<Move>();
     for (int i = 0; i < 3; ++i) {
       for (int j = 0; j < 3; ++j) {
-        if (board[i][j]==0) {
-          if (i != j) { // Don't add doubles yet
-            moves.add(new Move(i, j));
-          }
+        if ((board[i][j]==0) && (i != j)) { // Don't add doubles yet
+          moves.add(new Move(i, j));
         }
         if (board[j][i]==0) {
           if (i != j) { // Don't add doubles yet
