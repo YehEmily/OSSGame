@@ -16,7 +16,7 @@ In my first iteration of the game, I fed the AI a look-up table. It's *the simpl
 int[][] moves = {{1,1}, {0,0}, {0,2}, {2,0}, {2,2}, {0,1}, {1,0}, {1,2}, {2,1}};
 ```
 
-Using a look-up table was obviously not the best way to implement a tic-tac-toe AI, though. Any player that knew the order in which the AI looks up moves would know exactly how to win every time, guaranteed. As a result, my next iteration involved creating an AI that could select its next move on its own, without a look-up table. This involved implementing a minimax algorithm, which aims to *minimize* the *maximum* loss. How is this achieved? First, I used an evaluation function to determine the score of the tic-tac-toe board after any given move. The rules were as follows:
+Using a look-up table was obviously not the best way to implement a tic-tac-toe AI, though. Any player that knows the order in which the AI looks up moves will also know exactly how to win every time, guaranteed. As a result, my next iteration involved creating an AI that could select its next move on its own, without a look-up table. This involved implementing a minimax algorithm, which aims to *minimize* the *maximum* loss. How is this achieved? First, I used an evaluation function to determine the score of the tic-tac-toe board after any given move. The rules were as follows:
 
 * ADD 100 points for each of the AI's 3-in-a-rows
 * ADD 10 points for each of the AI's 2-in-a-rows with an empty cell in the row
@@ -24,11 +24,19 @@ Using a look-up table was obviously not the best way to implement a tic-tac-toe 
 * SUBTRACT the resulting points from evaluating the board the same way from the player's point of view
 * DO NOTHING for empty lines or lines that are filled with both the AI's and the player's marks
 
+Then, for every move that the player makes, the AI generates trees of every possible move that it could make, then every possible subsequent move the player could make, and so on until an endgame state is reached. An endgame state is defined as either the point where there are no moves left, or the point at which either the player or the AI has won the game. For each state that was generated, the board is evaluated using the rules above. The AI finally makes a move based on the series of moves that results in the highest overall score.
+
+In this way, it was possible for my tic-tac-toe AI to win every single game, or end every single game in a tie. To make the game more fun, I decided to "dumb down" the AI a bit and let it only look ahead by a few moves, instead of seeing every possibility.
+
 ### Go Fish
+Go Fish was a game that I started throwing together over winter break, and finished during this OSS. Its AI algorithm is relatively simple. Every time the player asks for a card, the AI "remembers" that card and stores it in its memory. If it happens to have the card in a later turn, it will ask the player for that same card. However, if the user makes a match with that card before then, the AI discards that card from its memory.
 
 ### Battleship
+Battleship was the last game that I wrote. There were about 2.5 different AI algorithms that I used. The first simply involved making random shots, ignoring randomly generated coordinates that were already marked as misses or hits. When a hit was made, this algorithm also generated a list of possible other, neighboring coordinates to the hit, so that it would shoot at a hit's neighbors after finding a hit. The second algorithm was slightly more complicated; it involved generating a probability distribution function (PDF) that allows the AI to pick the most likely coordinate to shoot at, based on how many different ways a ship could fit in the given space. The final algorithm was an adaptation of the PDF algorithm, in that it didn't just calculate the probability based on whether a single ship could fit in the given space, but rather, it calculated the probability based on how many of the remaining ships could fit in the given space. This was actually the first time I had heard of this strategy for playing Battleship; I never knew that using a PDF algorithm could lower the number of shots necessary by a significant number, but as it turned out, when a randomly-shooting AI played against a PDF-based AI, the PDF-based AI won every time.
 
 ### Explorations & Other Lessons Learned
+* [Codacy](https://www.codacy.com): A really amazing code review application that taught me so much about programming conventions. Now that I know about it, I really want to recommend it to everyone I know - it's free, flexible (allows users to define, enable, and disable "patterns" that are caught by the application), and gives astoundingly comprehensive diagnoses of code. It also integrates with a wide variety of different developer tools - most notably, GitHub and Heroku. Thanks to Oliver for introducing it to me!
+* .gitignore files: So, before this project, I didn't know what .gitignore files were, but now I do! They are files that contain lists of files that the user would like GitHub to ignore (when they try to use commands like "git add ." etc.). I found the .gitignore file especially useful in this project for ignoring all of the *.class files that are generated every time I run a program.
 
 
 ### Conclusion
