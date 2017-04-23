@@ -148,6 +148,6 @@ public class AIPlayerRandomShots extends AIPlayerObject {
   }
   
   protected int[] convertCoord (String s) {
-    return null;
+    return null; // Throw an EXCEPTION or COMPILE ERROR
   }
 }

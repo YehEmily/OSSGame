@@ -113,7 +113,7 @@ public class AIPlayer extends Player {
     int sum = 0;
     int[][] b = board.getBoard();
     sum += calculateSumForPlayer(b, 2);
-    sum -= calculateSumForPlayer(b, 1);
+    sum -= calculateSumForPlayer(b, 1) / 2;
     return sum;
   }
   
