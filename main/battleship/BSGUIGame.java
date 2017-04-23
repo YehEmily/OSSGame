@@ -7,8 +7,9 @@ public class BSGUIGame {
   
   private AIPlayer ai; // Computer instance
   private Player p; // Player instance
-  private boolean isPlayerTurn, isGameOver; // Game state booleans
+  private boolean isPlayerTurn, isGameOver, playerHitWasMade, computerHitWasMade;
   private Board aiBoard; // AI's reference board
+  final static String[] ROWS = {"A", "B", "C", "D", "E", "F", "G", "H", "I", "J"};
   
   /**
    * Constructor
@@ -19,66 +20,48 @@ public class BSGUIGame {
     isPlayerTurn = true; // Player starts
     isGameOver = false;
     aiBoard = new Board();
-    play();
-  }
-  
-  /**
-   * Main gameplay happens here
-   */
-  public void play () {
-    placeUserShips();
-//    placeUserShipsFromInput("ships.txt");
     placeAIShips();
-    
-    while (!isGameOver) {
-      
-      while (isPlayerTurn) { // Player's turn
-        System.out.println("It's your turn! Enter a coordinate to shoot.");
-        String coordinate = userQuery();
-        boolean isHit = ai.getBoard().isHit(coordinate); // Check if hit
-        if (isHit) {
-          System.out.println("Congratulations! It's a hit!");
-        } else {
-          System.out.println("Drat, looks like it's a miss!");
-        }
-        isPlayerTurn = false;
-      }
-      System.out.println("***** AI'S BOARD *****");
-      System.out.println(ai.getBoard().toHiddenString());
-      isGameOver = ai.getBoard().isGameOver();
-      
-      while (!isPlayerTurn) { // AI's turn
-        System.out.println("It's the AI's turn! Give it a second to pick a coordinate.");
-        System.out.println(Arrays.deepToString(p.getBoard().getBoard()));
-        String nextShot = ai.getNextShot(p.getBoard());
-        boolean isHit = p.getBoard().isHit(nextShot); // Check if hit
-        if (isHit) {
-          aiBoard.addAction(nextShot, 7);
-          System.out.println("Oh! The AI has made a hit!");
-        } else {
-          System.out.println("The AI missed!");
-          aiBoard.addAction(nextShot, -1);
-        }
-        isPlayerTurn = true;
-      }
-      System.out.println("***** YOUR BOARD *****");
-      System.out.println(p.getBoard());
-      isGameOver = p.getBoard().isGameOver();
-    }
-    
-    System.out.println("Congratulations, game over!");
+    placeUserShipsFromInput("/home/emily/Desktop/OSSGame/main/battleship/ships.txt");
   }
   
-  /**
-   * userQuery: Asks the user for information.
-   * 
-   * @return  user input from keyboard
-   */
-  public String userQuery () {
-    Scanner s = new Scanner(System.in);
-    String coordinate = s.next();
-    s.close();
-    return coordinate;
+  public boolean isPlayerTurn () {return isPlayerTurn;}
+  public boolean isGameOver () {return isGameOver;}
+  public String[] getRows () {return ROWS;}
+  
+  public void userTurn (String move) {
+    boolean isHit = ai.getBoard().isHit(move); // Check if hit
+    if (isHit) {
+      playerHitWasMade = true;
+      System.out.println("Congratulations! It's a hit!");
+    } else {
+      playerHitWasMade = false;
+      System.out.println("Drat, looks like it's a miss!");
+    }
+    isPlayerTurn = false;
+    isGameOver = ai.getBoard().isGameOver();
+  }
+  
+  public boolean playerHitWasMade () {
+    return playerHitWasMade;
+  }
+  
+  public int[] computerTurn () {
+    String nextShot = ai.getNextShot(p.getBoard());
+    boolean isHit = p.getBoard().isHit(nextShot); // Check if hit
+    if (isHit) {
+      aiBoard.addAction(nextShot, 7);
+      computerHitWasMade = true;
+    } else {
+      aiBoard.addAction(nextShot, -1);
+      computerHitWasMade = false;
+    }
+    isPlayerTurn = true;
+    isGameOver = p.getBoard().isGameOver();
+    return unconvertCoord(nextShot);
+  }
+  
+  public boolean computerHitWasMade () {
+    return computerHitWasMade;
   }
   
   /**
@@ -91,6 +74,17 @@ public class BSGUIGame {
     String[] result = new String[2];
     result[0] = c.split(",")[0];
     result[1] = c.split(",")[1];
+    return result;
+  }
+  
+  private int[] unconvertCoord (String c) {
+    int[] result = new int[2];
+    String rowName = c.substring(0, 1);
+    int index = -1;
+    for (int i = 0; i < ROWS.length; ++i) {
+      if (ROWS[i].equals(rowName)) index = i;
+    }
+    result[0] = index; result[1] = Integer.parseInt(c.substring(1));
     return result;
   }
   
@@ -131,64 +125,12 @@ public class BSGUIGame {
         br.close();
         return all;
       } catch (IOException ex) {
-        System.out.println("IOException caught.");
+        System.out.println("IOException caught!");
         return "";
       }
       } catch (FileNotFoundException ex) {
       System.out.println("File not found!");
       return "";
     }
-  }
-  
-  /**
-   * Places user's ships from keyboard
-   */
-  public void placeUserShips () {
-    Board b = p.getBoard(); // retrieve the player's board
-    
-    System.out.println("Welcome to Battleship! It's time to place your ships.");
-    System.out.println("Specify coordinates in the form of COORDINATE,DIRECTION.");
-    System.out.println("For example: A4,VERTICAL");
-    System.out.println("Ships are not allowed to overlap.");
-    System.out.println("Where would you like to place your CARRIER? (5 units long)");
-    Scanner s = new Scanner (System.in);
-    String carrier = s.next();
-    s.close();
-    b.placeShip(convertCoord(carrier)[0], convertCoord(carrier)[1], 5);
-    System.out.println(b);
-    
-    System.out.println("Where would you like to place your BATTLESHIP? (4 units long)");
-    s = new Scanner (System.in);
-    String battleship = s.next();
-    s.close();
-    b.placeShip(convertCoord(battleship)[0], convertCoord(battleship)[1], 4);
-    System.out.println(b);
-    
-    System.out.println("Where would you like to place your CRUISER? (3 units long)");
-    s = new Scanner (System.in);
-    String cruiser = s.next();
-    s.close();
-    b.placeShip(convertCoord(cruiser)[0], convertCoord(cruiser)[1], 3);
-    System.out.println(b);
-    
-    System.out.println("Where would you like to place your SUBMARINE? (3 units long)");
-    s = new Scanner (System.in);
-    String submarine = s.next();
-    s.close();
-    b.placeShip(convertCoord(submarine)[0], convertCoord(submarine)[1], 3);
-    System.out.println(b);
-    
-    System.out.println("Where would you like to place your DESTROYER? (2 units long)");
-    s = new Scanner (System.in);
-    String destroyer = s.next();
-    s.close();
-    b.placeShip(convertCoord(destroyer)[0], convertCoord(destroyer)[1], 2);
-    System.out.println(b);
-    
-    System.out.println("All ships have been placed! Give AI a moment to place her ships, too...");
-  }
-  
-  public static void main (String[] args) {
-    new BattleshipGame();
   }
 }

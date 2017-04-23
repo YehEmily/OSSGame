@@ -21,6 +21,7 @@ public class MainGame implements ItemListener {
   final static String NONE = "--";
   
   private TTTGUIGame ttt;
+  private BSGUIGame bs;
   private Pet oliner;
   
   public MainGame() {
@@ -33,7 +34,7 @@ public class MainGame implements ItemListener {
     initBL(feed); initBL(wash); initBL(exit); initBL(save);
     
     ttt = new TTTGUIGame();
-    
+    bs = new BSGUIGame();
     oliner = new Pet();
   }
   
@@ -97,10 +98,6 @@ public class MainGame implements ItemListener {
   
   private JPanel createBattleshipGUI () {
     JPanel bsGUI = new JPanel(new BorderLayout());
-//    JLabel playerSide = new JLabel("Your Side");
-//    JLabel aiSide = new JLabel("AI's Side");
-//    playerSide.setHorizontalTextPosition(JLabel.CENTER);
-//    aiSide.setHorizontalTextPosition(JLabel.CENTER);
     
     bsButtonsAI = new JButton[10][10];
     bsButtonsPlayer = new JButton[10][10];
@@ -108,9 +105,6 @@ public class MainGame implements ItemListener {
     JPanel bsGUIAI = new JPanel(new GridLayout(10, 10));
     JPanel bsGUIPlayer = new JPanel(new GridLayout(10,10));
     JPanel filler = new JPanel();
-    
-//    bsGUIPlayer.add(playerSide);
-//    bsGUIAI.add(aiSide);
     
     for (int i = 0; i < 10; ++i) {
       for (int j = 0; j < 10; ++j) {
@@ -184,14 +178,26 @@ public class MainGame implements ItemListener {
       
       for (int i = 0; i < 10; ++i) {
         for (int j = 0; j < 10; ++j) {
-          if (event.getSource() == bsButtonsPlayer[i][j]) {
-            System.out.println(i + "," + j);
+          if ((event.getSource() == bsButtonsPlayer[i][j]) && (!bs.isGameOver())) {
+            bs.userTurn(bs.getRows()[i] + j);
+            if (bs.playerHitWasMade())
+              bsButtonsPlayer[i][j].setText("<html> X </html>");
+            else
+              bsButtonsPlayer[i][j].setText("<html> O </html>");
+            
+            int[] coords = bs.computerTurn();
+            System.out.println(coords[0] + coords[1]);
+            if (bs.computerHitWasMade())
+              bsButtonsAI[coords[0]][coords[1]].setText("<html> X </html>");
+            else
+              bsButtonsAI[coords[0]][coords[1]].setText("<html> O </html>");
           }
         }
       }
+      // TO DO: do something cool when someone wins
       // TO DO: Mark space as X if hit, H if sunk, O if miss
       // TO DO: Allow player to mark their own ships
-      // TO DO: Place AI hits
+      // TO DO: Make sure if player hits same button again, nothing happens (is still turn)
       
       if (event.getSource() == exit) System.exit(0);
       else System.out.println("Button not implemented yet.");
