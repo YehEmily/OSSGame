@@ -4,7 +4,9 @@
 This game is the end product of a semester-long independent study (Olin Self Study, or OSS) in computer science topics, particularly **Artificial Intelligence**. It's currently a work in progress.
 
 ### Objectives
-My intention was to create an entertaining game that comprises of several different games. These other games include Go Fish, Battleship, and Tic Tac Toe. The overarching game will be a Tamagotchi-like game, in which the player must take care of a "pet" by playing games with it. Unlike Tamagotchis, though, the "pet" has a mind of its own and can easily keep up with the player in each game.
+One of my main objectives with this project was to maintain and improve my ability to use Java to solve problems. Another main objective was to learn how different AIs work and how to implement them (how to do so algorithmically, and also how to do so using Java).
+
+My intention with this project was to create an entertaining game that is comprised of several different games. These other games include Go Fish, Battleship, and Tic Tac Toe, although I would like to expand this to include more games in the future. The overarching game is a Tamagotchi-styled game, in which the player must take care of an "Oliner" pet by playing games with it. Unlike Tamagotchis, though, the "Oliner" has a mind of its own and can intelligently keep up with the player in each game.
 
 ### References and Acknowledgements
 A warm and appreciative "thank you" goes to my OSS advisor and professor, Oliver Steele. Another grateful "thank you" goes to my OSS peer, Dakota Nelson. Many more "thank you"s go to the authors of the following sites, which I referenced frequently to complete this game:
@@ -13,9 +15,7 @@ A warm and appreciative "thank you" goes to my OSS advisor and professor, Oliver
 * And more to come...
 
 ### Aspirations
-I want this game to be entertaining and beautiful - the kind of game that a lot of people might want to play for a significant amount of time. My plan for the gameplay is that a player will first see a Menu screen, where they can choose to start a new game or load an old one (how games will be saved is something I still need to figure out). Starting a new game will bring the player to another screen, where their "pet" will be. Every few minutes, the "pet" will ask the player to play a random game. If the "pet" wins the game, it will gain 1x the experience points associated with the game, and if the player wins, it will gain 2x the experience points (because regardless of what it is, we learn more by losing than by winning). Once the "pet" has gained enough experience points, it will "evolve" and the game will end. There are a lot of details I think I'm not considering, but I'm sure I'll be able to figure them out when I start writing the game.
-
-In addition, I realize that Java is less conducive to game development than some other languages, but I ultimately decided to pursue the games in Java anyway because I need to be able to use Java proficiently in the summer. Besides, Java GUIs are a confusing and amazing mess that I'd like to master eventually.
+I want this game to be entertaining and beautiful. My plan for the gameplay is that a player will first see a Menu screen, where they can choose to start a new game or load an old one (how games will be saved is something I still need to figure out). Starting a new game will bring the player to another screen, where their "Oliner" will be. Every few minutes, the "Oliner" will ask the player to play a random game. If the "Oliner" wins the game, it will gain 1x the experience points associated with the game, and if the player wins, it will gain 2x the experience points (because regardless of what it is, we learn more by losing than by winning!). Once the "Oliner" has gained enough experience points, it will "evolve" and the game will end.
 
 ### Semester Schedule
 **Week of Feb. 13**: Write rough but playable drafts of a simple game to toy with ideas  
@@ -30,12 +30,3 @@ In addition, I realize that Java is less conducive to game development than some
 **April 17**: Continue developing final game (and inner games)  
 **April 24**: Put final touches on the game and get it ready for submission/Olin Expo  
 **May 1**: Final week - final project completion and submission!
-
-### Other Things I Should Explain/Do But... Later
-- what do we want it to look like?
-- what do we want it to do?
-* watching ais playing each other would be fun
-* explanation of different algorithms
-* (pros and cons, what are they)
-* semester-long reflection
-
