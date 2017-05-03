@@ -26,6 +26,8 @@ Using a look-up table was obviously not the best way to implement a tic-tac-toe 
 
 Then, for every move that the player makes, the AI generates trees of every possible move that it could make, then every possible subsequent move the player could make, and so on until an endgame state is reached. An endgame state is defined as either the point where there are no moves left, or the point at which either the player or the AI has won the game. For each state that was generated, the board is evaluated using the rules above. The AI finally makes a move based on the series of moves that results in the highest overall score.
 
+![Tic-Tac-Toe Illustration](http://i.imgur.com/p1iWwen.png)
+
 In this way, it was possible for my tic-tac-toe AI to win every single game, or end every single game in a tie. To make the game more fun, I decided to "dumb down" the AI a bit and let it only look ahead by a few moves, instead of seeing every possibility.
 
 ### Go Fish
