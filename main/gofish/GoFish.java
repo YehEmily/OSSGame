@@ -20,16 +20,16 @@ public class GoFish {
     
     drawCard(5, user); drawCard(5, computer);
     
-    String introduction = "<html>The objective of this game is to accumulate " +
-      "points by matching up cards according to their values.<br/>Each round, " +
-      "each player can ask the other if they have any of a certain kind of " +
-      "card.<br/>For example, you can ask, 'got any... 8s?' If the other player " +
-      "has any cards that match, they must give them up.<br/>Otherwise, they " +
-      "will tell you to 'go fish' and you must draw a card from the deck.<br/>" +
-      "The game ends when there are no more cards left in play.<br/>" +
-      "Good luck and have fun!</html>";
-    
-    JOptionPane.showMessageDialog(null, introduction);
+//    String introduction = "<html>The objective of this game is to accumulate " +
+//      "points by matching up cards according to their values.<br/>Each round, " +
+//      "each player can ask the other if they have any of a certain kind of " +
+//      "card.<br/>For example, you can ask, 'got any... 8s?' If the other player " +
+//      "has any cards that match, they must give them up.<br/>Otherwise, they " +
+//      "will tell you to 'go fish' and you must draw a card from the deck.<br/>" +
+//      "The game ends when there are no more cards left in play.<br/>" +
+//      "Good luck and have fun!</html>";
+//    
+//    JOptionPane.showMessageDialog(null, introduction);
   }
   
   public void drawCard (int draws, Player player) {

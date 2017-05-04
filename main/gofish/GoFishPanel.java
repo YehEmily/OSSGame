@@ -250,13 +250,13 @@ public class GoFishPanel extends JPanel {
         user_hand.add(button);
       } else {
         try {
-          Image img = ImageIO.read(new File("/home/emily/Desktop/OSSGame/main/gofish/Cards/mystery.png"));
+          Image img = ImageIO.read(new File("gofish/Cards/mystery.png"));
           ImageIcon ii = new ImageIcon(img);
           button.setIcon(ii);
           button.setBackground(Color.WHITE);
           computer_hand.add(button);
         } catch (Exception ex) {
-          System.out.println(ex);
+          System.out.println("Paint Cards exception: " + ex);
         }
       }
     }
@@ -298,7 +298,7 @@ public class GoFishPanel extends JPanel {
     String cardType = card.getType();
     int cardNum = card.getNumber();
     try {
-      String path = "/home/emily/Desktop/OSSGame/main/gofish/Cards/" +
+      String path = "gofish/Cards/" +
         cardType + cardNum + ".png";
       Image img = ImageIO.read(new File(path));
       ImageIcon ii = new ImageIcon(img);
@@ -344,11 +344,11 @@ public class GoFishPanel extends JPanel {
     
     deckButton = new JButton();
     try {
-      Image img = ImageIO.read(new File("/home/emily/Desktop/OSSGame/main/gofish/Cards/mystery.png"));
+      Image img = ImageIO.read(new File("gofish/Cards/mystery.png"));
       ImageIcon ii = new ImageIcon(img);
       deckButton.setIcon(ii);
     } catch (Exception ex) {
-      System.out.println(ex);
+      System.out.println("West Panel error: " + ex);
     }
     
     deckButton.setBackground(Color.WHITE);
