@@ -5,12 +5,23 @@ public class Pet {
   private String name;
   private int age, cleanliness, fullness;
   private boolean isAdult;
+  private long currentTime;
+  private long elapsedTime;
   
   public Pet () {
     name = "Spot";
     age = 0;
     cleanliness = 10;
     fullness = 10;
+    currentTime = System.nanoTime();
+    elapsedTime = 0;
+  }
+  
+  public void updateStats () {
+    feed(-1);
+    clean(-1);
+    System.out.println("Fullness: " + fullness);
+    System.out.println("Cleanliness: " + cleanliness);
   }
   
   public Pet (String name) {
@@ -33,7 +44,7 @@ public class Pet {
     return cleanliness;
   }
   
-  public void setCleanliness (int inc) {
+  public void clean (int inc) {
     cleanliness += inc;
   }
   
@@ -41,7 +52,7 @@ public class Pet {
     return fullness;
   }
   
-  public void setFullness (int inc) {
+  public void feed (int inc) {
     fullness += inc;
   }
   

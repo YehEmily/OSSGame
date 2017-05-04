@@ -1,16 +1,23 @@
+// Add AI visuals (Battleship: PDF display, TTT: Trees, GoFish: Memory bank)
+// Statistics about different AIs, algorithms, iterations (poster), live demo
+
 package main;
 
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+import java.util.TimerTask;
+import java.util.Timer;
 
 import battleship.BSGUIGame;
+//import gofish.GoFish;
 //import gofish.GoFishPanel;
+//import gofish.Cards.*;
 import ttt.TTTGUIGame;
 
 public class MainGame implements ItemListener {
   
-  private JButton feed, wash, exit, save, chooseTTT, chooseBS, chooseGF;
+  private JButton feed, clean, exit, save, chooseGF;
   private JButton[][] tttButtons, bsButtonsAI, bsButtonsPlayer;
   private JPanel panel;
   private JLabel instructions;
@@ -24,18 +31,38 @@ public class MainGame implements ItemListener {
   private BSGUIGame bs;
   private Pet oliner;
   
+  private boolean game_on;
+  
   public MainGame() {
     String intro = intro();
     instructions = new JLabel(intro);
     feed = new JButton("Feed");
-    wash = new JButton("Wash");
+    clean = new JButton("Clean");
     exit = new JButton("Exit");
     save = new JButton("Save");
-    initBL(feed); initBL(wash); initBL(exit); initBL(save);
+    initBL(feed); initBL(clean); initBL(exit); initBL(save);
     
     ttt = new TTTGUIGame();
     bs = new BSGUIGame();
     oliner = new Pet();
+    
+    game_on = true;
+    
+    Timer t = new Timer();
+    t.scheduleAtFixedRate(new TimerTask() {
+      public void run() {
+        System.out.println("3 seconds passed");
+        oliner.updateStats();
+      }
+    }, 0, 10000); // run first occurrence immediately, then every ten seconds
+  }
+  
+  public boolean getGameState () {
+    return game_on;
+  }
+  
+  public void gameOff () {
+    game_on = false;
   }
   
   public void addComponentToPane (Container pane) {
@@ -51,7 +78,7 @@ public class MainGame implements ItemListener {
     
     JPanel options = new JPanel();
     options.add(feed);
-    options.add(wash);
+    options.add(clean);
     options.add(save);
     options.add(exit);
     
@@ -85,6 +112,24 @@ public class MainGame implements ItemListener {
   public void itemStateChanged (ItemEvent evt) {
     CardLayout cl = (CardLayout)(panel.getLayout());
     cl.show(panel, (String)evt.getItem());
+  }
+  
+  private void cleanOliner () {
+    oliner.clean(1);
+    System.out.println(oliner.getCleanliness());
+  }
+  
+  private void dirtyOliner () {
+    oliner.clean(-1);
+  }
+  
+  private void feedOliner () {
+    oliner.feed(1);
+    System.out.println(oliner.getFullness());
+  }
+  
+  private void starveOliner () {
+    oliner.feed(-1);
   }
   
   private static void createAndShowGUI () {
@@ -199,12 +244,18 @@ public class MainGame implements ItemListener {
       // TO DO: Allow player to mark their own ships
       // TO DO: Make sure if player hits same button again, nothing happens (is still turn)
       
-      if (event.getSource() == exit) System.exit(0);
+      if (event.getSource() == exit) {
+        System.exit(0);
+        game_on = false;
+      }
+      else if (event.getSource() == feed) feedOliner();
+      else if (event.getSource() == clean) cleanOliner();
       else System.out.println("Button not implemented yet.");
     }
   }
   
   public static void main (String[] args) {
+    
     try {
       //UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
       UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
