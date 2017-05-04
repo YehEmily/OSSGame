@@ -20,7 +20,7 @@ public class MainGame implements ItemListener {
   private JButton feed, clean, exit, save, chooseGF;
   private JButton[][] tttButtons, bsButtonsAI, bsButtonsPlayer;
   private JPanel panel;
-  private JLabel instructions;
+  private JLabel instructions, fullness, cleanliness, age;
   
   final static String GOFISH = "Play Go Fish!";
   final static String TICTACTOE = "Play Tic-Tac-Toe!";
@@ -46,15 +46,33 @@ public class MainGame implements ItemListener {
     bs = new BSGUIGame();
     oliner = new Pet();
     
+    fullness = new JLabel("Fullness: " + oliner.getFullness()); 
+    cleanliness = new JLabel("Cleanliness: " + oliner.getCleanliness());
+    age = new JLabel("Age: " + oliner.getAge());
+    
     game_on = true;
     
-    Timer t = new Timer();
-    t.scheduleAtFixedRate(new TimerTask() {
+    Timer t1 = new Timer();
+    t1.scheduleAtFixedRate(new TimerTask() {
       public void run() {
-        System.out.println("3 seconds passed");
         oliner.updateStats();
+        updateLabels();
       }
     }, 0, 10000); // run first occurrence immediately, then every ten seconds
+    
+    Timer t2 = new Timer();
+    t2.scheduleAtFixedRate(new TimerTask() {
+      public void run() {
+        oliner.ageUp();
+        updateLabels();
+      }
+    }, 0, 30000); // run first occurrence immediately, then every thirty seconds
+  }
+  
+  private void updateLabels () {
+    fullness.setText("Fullness: " + oliner.getFullness());
+    cleanliness.setText("Cleanliness: " + oliner.getCleanliness());
+    age.setText("Age: " + oliner.getAge());
   }
   
   public boolean getGameState () {
@@ -67,24 +85,36 @@ public class MainGame implements ItemListener {
   
   public void addComponentToPane (Container pane) {
     JPanel comboPane = new JPanel();
+//    JLabel spacer = new JLabel("<html><br><br></html>");
     String comboBoxItems[] = { NONE, GOFISH, TICTACTOE, BATTLESHIP };
     JComboBox cb = new JComboBox(comboBoxItems);
     cb.setEditable(false);
     cb.addItemListener(this);
     comboPane.add(cb);
     
+//    JPanel test = new JPanel();
+//    test.add(instructions);
+//    test.add(spacer, "span, grow");
+//    test.add(fullness); test.add(cleanliness); test.add(age);
+//    test.add(spacer, "span, grow");
+//    test.add(feed); test.add(clean); test.add(save); test.add(exit);
+//    test.add(spacer, "span, grow");
+    
     JPanel intro = new JPanel();
     intro.add(instructions);
     
+    JPanel stats = new JPanel();
+    stats.add(fullness); stats.add(cleanliness); stats.add(age);
+//    stats.validate();
+    
     JPanel options = new JPanel();
-    options.add(feed);
-    options.add(clean);
-    options.add(save);
-    options.add(exit);
+    options.add(feed); options.add(clean); options.add(save); options.add(exit);
     
     JPanel menu = new JPanel(new BorderLayout());
     menu.add(intro, BorderLayout.NORTH);
+    menu.add(stats, BorderLayout.CENTER);
     menu.add(options, BorderLayout.SOUTH);
+//    menu.validate();
     
     JPanel placeholder = new JPanel();
     placeholder.add(new JButton("Select a game from the menu!"));
@@ -93,9 +123,7 @@ public class MainGame implements ItemListener {
     chooseGF = new JButton("Yes! " + GOFISH);
     initBL(chooseGF);
     gfOption.add(chooseGF);
-    
     JPanel tttOption = createTicTacToeGUI();
-    
     JPanel bsOption = createBattleshipGUI();
     
     panel = new JPanel(new CardLayout());
@@ -104,7 +132,7 @@ public class MainGame implements ItemListener {
     panel.add(bsOption, BATTLESHIP);
     panel.add(gfOption, GOFISH);
     
-    pane.add(options, BorderLayout.PAGE_START);
+    pane.add(menu, BorderLayout.PAGE_START);
     pane.add(comboPane, BorderLayout.CENTER);
     pane.add(panel, BorderLayout.SOUTH);
   }
@@ -195,7 +223,7 @@ public class MainGame implements ItemListener {
   }
   
   private String intro () {
-    return "<html><span style='font-size: 15px'>Welcome!<br/>" +
+    return "<html><span style=''>Welcome!<br/>" +
       "Your objective in this game is to take care of an Oliner for 8 semesters.<br/>" +
       "Oliners are notorious for being easily bored, so you'll need to play lots of games with them.<br/>" +
       "You can pick any game from the drop-down menu below. Have fun!<br/>" +
@@ -247,10 +275,13 @@ public class MainGame implements ItemListener {
       if (event.getSource() == exit) {
         System.exit(0);
         game_on = false;
-      }
-      else if (event.getSource() == feed) feedOliner();
-      else if (event.getSource() == clean) cleanOliner();
-      else System.out.println("Button not implemented yet.");
+      } else if (event.getSource() == feed) {
+        feedOliner();
+        fullness.setText("Fullness: " + oliner.getFullness());
+      } else if (event.getSource() == clean) {
+        cleanOliner();
+        cleanliness.setText("Cleanliness: " + oliner.getCleanliness());
+      } else System.out.println("Button not implemented yet.");
     }
   }
   
