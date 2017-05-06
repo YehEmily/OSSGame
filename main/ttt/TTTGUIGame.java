@@ -111,7 +111,15 @@ public class TTTGUIGame {
         setWinner(board.getBoard()[2][0]);
         return true;
       }
-      return false;
+      for (int i = 0; i < 3; ++i) {
+        for (int j = 0; j < 3; ++j) {
+          if ((board.getBoard()[i][j] == 0)) {
+            return false;
+          }
+        }
+      }
+      setWinner(5);
+      return true;
     } catch (NullPointerException ex) {
       return false;
     }
@@ -134,10 +142,16 @@ public class TTTGUIGame {
    * setWinner method: Sets the winner of a given game
    */
   private void setWinner (int i) {
-    if (i==1) {
+    if (i == 1) {
       winner = user.getName();
-    } else {
+    } else if (i == 2) {
       winner = "Computer";
+    } else {
+      winner = "Tie";
     }
+  }
+  
+  public String getWinner () {
+    return winner;
   }
 }
