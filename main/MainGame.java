@@ -249,9 +249,21 @@ public class MainGame implements ItemListener {
             }
           }
         }
+      } else {
+        for (int i = 0; i < 3; ++i) {
+          for (int j = 0; j < 3; ++j) {
+            tttButtons[i][j].setBackground(Color.BLACK);
+          }
+        }
+        if (ttt.getWinner().equals("Computer")) {
+          tttStatus.setText("<html><div style='text-align: center'>Game completed! The AI won!</div></html>");
+        } else if (!ttt.getWinner().equals("Tie")) {
+          tttStatus.setText("<html><div style='text-align: center'>Game completed! You won!</div></html>");
+        } else {
+          tttStatus.setText("<html><div style='text-align: center'>Game completed! It's a tie!</div></html>");
+        }
       }
-      // TO DO: do something cool when someone wins
-      // TO DO: do something else when there's a tie
+      // TO DO: Be able to reset games
       
       for (int i = 0; i < 10; ++i) {
         for (int j = 0; j < 10; ++j) {
@@ -275,14 +287,6 @@ public class MainGame implements ItemListener {
       // TO DO: Mark space as X if hit, H if sunk, O if miss
       // TO DO: Allow player to mark their own ships
       // TO DO: Make sure if player hits same button again, nothing happens (is still turn)
-      
-      // Alright I don't know why this doesn't work, but I think it's fine
-      // TO DO: Load scores from playing Go Fish from text file
-//      if (event.getSource() == chooseGF) {
-//        GoFishPanel gfp = new GoFishPanel();
-//        gfp.setVisible(true);
-//        gfp.setOpaque(true);
-//      }
       
       if (event.getSource() == exit) {
         System.exit(0);
@@ -311,11 +315,8 @@ public class MainGame implements ItemListener {
     } catch (ClassNotFoundException ex) {
       ex.printStackTrace();
     }
-    /* Turn off metal's use of bold fonts */
     UIManager.put("swing.boldMetal", Boolean.FALSE);
     
-    //Schedule a job for the event dispatch thread:
-    //creating and showing this application's GUI.
     javax.swing.SwingUtilities.invokeLater(new Runnable() {
       public void run() {
         createAndShowGUI();
