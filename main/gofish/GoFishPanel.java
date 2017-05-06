@@ -100,6 +100,20 @@ public class GoFishPanel extends JPanel {
     }
     turn_status.setText("The game has ended.");
     status.setText("Game over! " + game.getWinner().getName() + " is the winner! Thanks for a fun game!");
+    if (!game.getWinner().getName().equals("Computer")) writeScore("Player");
+    else writeScore("Computer");
+  }
+  
+  private void writeScore (String winner) {
+    try {
+      File file = new File("GoFishWinners.txt");
+      FileWriter writer = new FileWriter(file, true);
+      writer.write(winner + "\n");
+      writer.flush();
+      writer.close();
+    } catch (IOException ex) {
+      System.out.println(ex);
+    }
   }
   
   private void smellTheRoses (int milliseconds) {
