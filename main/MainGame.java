@@ -11,7 +11,7 @@ import java.util.Timer;
 
 import battleship.BSGUIGame;
 //import gofish.GoFish;
-//import gofish.GoFishPanel;
+import gofish.GoFishPanel;
 //import gofish.Cards.*;
 import ttt.TTTGUIGame;
 
@@ -21,6 +21,7 @@ public class MainGame implements ItemListener {
   private JButton[][] tttButtons, bsButtonsAI, bsButtonsPlayer;
   private JPanel panel;
   private JLabel instructions, fullness, cleanliness, age;
+  private JLabel tttStatus, bsStatus;
   
   final static String GOFISH = "Play Go Fish!";
   final static String TICTACTOE = "Play Tic-Tac-Toe!";
@@ -40,7 +41,7 @@ public class MainGame implements ItemListener {
     clean = new JButton("Clean");
     exit = new JButton("Exit");
     save = new JButton("Save");
-    initBL(feed); initBL(clean); initBL(exit); initBL(save);
+    initButton(feed); initButton(clean); initButton(exit); initButton(save);
     
     ttt = new TTTGUIGame();
     bs = new BSGUIGame();
@@ -85,27 +86,17 @@ public class MainGame implements ItemListener {
   
   public void addComponentToPane (Container pane) {
     JPanel comboPane = new JPanel();
-//    JLabel spacer = new JLabel("<html><br><br></html>");
     String comboBoxItems[] = { NONE, GOFISH, TICTACTOE, BATTLESHIP };
     JComboBox cb = new JComboBox(comboBoxItems);
     cb.setEditable(false);
     cb.addItemListener(this);
     comboPane.add(cb);
     
-//    JPanel test = new JPanel();
-//    test.add(instructions);
-//    test.add(spacer, "span, grow");
-//    test.add(fullness); test.add(cleanliness); test.add(age);
-//    test.add(spacer, "span, grow");
-//    test.add(feed); test.add(clean); test.add(save); test.add(exit);
-//    test.add(spacer, "span, grow");
-    
     JPanel intro = new JPanel();
     intro.add(instructions);
     
     JPanel stats = new JPanel();
     stats.add(fullness); stats.add(cleanliness); stats.add(age);
-//    stats.validate();
     
     JPanel options = new JPanel();
     options.add(feed); options.add(clean); options.add(save); options.add(exit);
@@ -114,14 +105,13 @@ public class MainGame implements ItemListener {
     menu.add(intro, BorderLayout.NORTH);
     menu.add(stats, BorderLayout.CENTER);
     menu.add(options, BorderLayout.SOUTH);
-//    menu.validate();
     
     JPanel placeholder = new JPanel();
     placeholder.add(new JButton("Select a game from the menu!"));
     
     JPanel gfOption = new JPanel();
     chooseGF = new JButton("Yes! " + GOFISH);
-    initBL(chooseGF);
+    initButton(chooseGF);
     gfOption.add(chooseGF);
     JPanel tttOption = createTicTacToeGUI();
     JPanel bsOption = createBattleshipGUI();
@@ -147,26 +137,20 @@ public class MainGame implements ItemListener {
     System.out.println(oliner.getCleanliness());
   }
   
-  private void dirtyOliner () {
-    oliner.clean(-1);
-  }
-  
   private void feedOliner () {
     oliner.feed(1);
     System.out.println(oliner.getFullness());
   }
   
-  private void starveOliner () {
-    oliner.feed(-1);
-  }
-  
-  private static void createAndShowGUI () {
+  public static void createAndShowGUI () {
     JFrame frame = new JFrame("Welcome!");
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     MainGame game = new MainGame();
     game.addComponentToPane(frame.getContentPane());
     frame.pack();
     frame.setVisible(true);
+    frame.setResizable(false);
+    frame.setBackground(Color.WHITE);
   }
   
   private JPanel createBattleshipGUI () {
@@ -178,11 +162,12 @@ public class MainGame implements ItemListener {
     JPanel bsGUIAI = new JPanel(new GridLayout(10, 10));
     JPanel bsGUIPlayer = new JPanel(new GridLayout(10,10));
     JPanel filler = new JPanel();
+    filler.setPreferredSize(new Dimension(150, 100));
     
     for (int i = 0; i < 10; ++i) {
       for (int j = 0; j < 10; ++j) {
         JButton b = new JButton("<html> - </html>");
-        b.addActionListener(new ButtonListener());
+        initButton(b);
         bsButtonsAI[i][j] = b;
         bsGUIAI.add(bsButtonsAI[i][j]);
       }
@@ -191,35 +176,54 @@ public class MainGame implements ItemListener {
     for (int i = 0; i < 10; ++i) {
       for (int j = 0; j < 10; ++j) {
         JButton b = new JButton("<html> - </html>");
-        b.addActionListener(new ButtonListener());
+        initButton(b);
         bsButtonsPlayer[i][j] = b;
         bsGUIPlayer.add(bsButtonsPlayer[i][j]);
       }
     }
     
+    bsStatus = new JLabel("<html><div style='text-align: center'>Game in progress!</div></html>", SwingConstants.CENTER);
+    Font font = new Font("Arial", Font.BOLD, 20);
+    bsStatus.setFont(font);
+    
     bsGUI.add(bsGUIAI, BorderLayout.EAST);
     bsGUI.add(filler, BorderLayout.CENTER);
     bsGUI.add(bsGUIPlayer, BorderLayout.WEST);
-    
+    bsGUI.add(bsStatus, BorderLayout.SOUTH);
+
     return bsGUI;
   }
   
   private JPanel createTicTacToeGUI () {
+    JPanel fullGUI = new JPanel(new BorderLayout());
+    
     tttButtons = new JButton[3][3];
     JPanel tttGUI = new JPanel(new GridLayout(3, 3));
     for (int i = 0; i < 3; ++i) {
       for (int j = 0; j < 3; ++j) {
         JButton b = new JButton("<html><span style='font-size: 70px'> - </span></html>");
-        b.addActionListener(new ButtonListener());
+        initButton(b);
         tttButtons[i][j] = b;
         tttGUI.add(tttButtons[i][j]);
       }
     }
-    return tttGUI;
+    
+    fullGUI.add(tttGUI, BorderLayout.CENTER);
+    
+    tttStatus = new JLabel("<html><div style='text-align: center'>Game in progress!</div></html>", SwingConstants.CENTER);
+    Font font = new Font("Arial", Font.BOLD, 20);
+    tttStatus.setFont(font);
+    
+    fullGUI.add(tttStatus, BorderLayout.SOUTH);
+    
+    return fullGUI;
   }
   
-  private void initBL (JButton b) {
+  private void initButton (JButton b) {
     b.addActionListener(new ButtonListener());
+    Font font = new Font("Arial", Font.BOLD, 12);
+    b.setBackground(Color.WHITE);
+    b.setFont(font);
   }
   
   private String intro () {
@@ -271,6 +275,14 @@ public class MainGame implements ItemListener {
       // TO DO: Mark space as X if hit, H if sunk, O if miss
       // TO DO: Allow player to mark their own ships
       // TO DO: Make sure if player hits same button again, nothing happens (is still turn)
+      
+      // Alright I don't know why this doesn't work, but I think it's fine
+      // TO DO: Load scores from playing Go Fish from text file
+//      if (event.getSource() == chooseGF) {
+//        GoFishPanel gfp = new GoFishPanel();
+//        gfp.setVisible(true);
+//        gfp.setOpaque(true);
+//      }
       
       if (event.getSource() == exit) {
         System.exit(0);
