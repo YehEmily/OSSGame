@@ -1,6 +1,10 @@
 testing*
 GameFrame*
 
+GoFishWinners.txt
+
+*.xcf
+
 *.class
 *.java~
 *.txt~
