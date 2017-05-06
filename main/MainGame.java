@@ -67,10 +67,22 @@ public class MainGame implements ItemListener {
     Timer t2 = new Timer();
     t2.scheduleAtFixedRate(new TimerTask() {
       public void run() {
-        oliner.ageUp();
-        updateLabels();
+        if (oliner.getAge() != 8) {
+          oliner.ageUp();
+          updateLabels();
+        } else {
+          updateImage();
+          oliner.ageUp();
+          updateLabels();
+        }
       }
     }, 0, 30000); // run first occurrence immediately, then every thirty seconds
+  }
+  
+  private void updateImage () {
+    URL url = MainGame.class.getResource("/main/images/oliner.gif");
+    ImageIcon ii = new ImageIcon(url);
+    petImage.setIcon(ii);
   }
   
   private void updateLabels () {
