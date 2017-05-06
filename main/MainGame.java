@@ -8,6 +8,9 @@ import java.awt.event.*;
 import javax.swing.*;
 import java.util.TimerTask;
 import java.util.Timer;
+import javax.imageio.ImageIO;
+import java.io.*;
+import java.net.*;
 
 import battleship.BSGUIGame;
 //import gofish.GoFish;
@@ -20,7 +23,7 @@ public class MainGame implements ItemListener {
   private JButton feed, clean, exit, save, chooseGF;
   private JButton[][] tttButtons, bsButtonsAI, bsButtonsPlayer;
   private JPanel panel;
-  private JLabel instructions, fullness, cleanliness, age;
+  private JLabel instructions, fullness, cleanliness, age, petImage;
   private JLabel tttStatus, bsStatus;
   
   final static String GOFISH = "Play Go Fish!";
@@ -85,6 +88,10 @@ public class MainGame implements ItemListener {
   }
   
   public void addComponentToPane (Container pane) {
+    URL url = MainGame.class.getResource("/main/images/egg.gif");
+    ImageIcon ii = new ImageIcon(url);
+    petImage = new JLabel(ii);
+    
     JPanel comboPane = new JPanel();
     String comboBoxItems[] = { NONE, GOFISH, TICTACTOE, BATTLESHIP };
     JComboBox cb = new JComboBox(comboBoxItems);
@@ -98,12 +105,16 @@ public class MainGame implements ItemListener {
     JPanel stats = new JPanel();
     stats.add(fullness); stats.add(cleanliness); stats.add(age);
     
+    JPanel petAndStats = new JPanel(new BorderLayout());
+    petAndStats.add(stats, BorderLayout.NORTH);
+    petAndStats.add(petImage, BorderLayout.CENTER);
+    
     JPanel options = new JPanel();
     options.add(feed); options.add(clean); options.add(save); options.add(exit);
     
     JPanel menu = new JPanel(new BorderLayout());
     menu.add(intro, BorderLayout.NORTH);
-    menu.add(stats, BorderLayout.CENTER);
+    menu.add(petAndStats, BorderLayout.CENTER);
     menu.add(options, BorderLayout.SOUTH);
     
     JPanel placeholder = new JPanel();
