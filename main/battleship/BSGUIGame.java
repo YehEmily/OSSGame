@@ -10,18 +10,20 @@ public class BSGUIGame {
   private boolean isPlayerTurn, isGameOver, playerHitWasMade, computerHitWasMade;
   private Board aiBoard; // AI's reference board
   final static String[] ROWS = {"A", "B", "C", "D", "E", "F", "G", "H", "I", "J"};
+  private String winner;
   
   /**
    * Constructor
    */
   public BSGUIGame () {
+    winner = "";
     ai = new AIPlayer("AI");
     p = new Player("Player 1");
     isPlayerTurn = true; // Player starts
     isGameOver = false;
     aiBoard = new Board();
     placeAIShips();
-    placeUserShipsFromInput("/home/emily/Desktop/OSSGame/main/battleship/ships.txt");
+    placeUserShipsFromInput("main/battleship/ships.txt");
   }
   
   public boolean isPlayerTurn () {return isPlayerTurn;}
@@ -38,11 +40,16 @@ public class BSGUIGame {
       System.out.println("Drat, looks like it's a miss!");
     }
     isPlayerTurn = false;
-    isGameOver = ai.getBoard().isGameOver();
+    if ("".equals(winner)) isGameOver = ai.getBoard().isGameOver();
+    if (isGameOver && "".equals(winner)) winner = "Player";
   }
   
   public boolean playerHitWasMade () {
     return playerHitWasMade;
+  }
+  
+  public String getWinner () {
+    return winner;
   }
   
   public int[] computerTurn () {
@@ -56,7 +63,8 @@ public class BSGUIGame {
       computerHitWasMade = false;
     }
     isPlayerTurn = true;
-    isGameOver = p.getBoard().isGameOver();
+    if ("".equals(winner)) isGameOver = p.getBoard().isGameOver();
+    if (isGameOver && "".equals(winner)) winner = "Computer";
     return unconvertCoord(nextShot);
   }
   
